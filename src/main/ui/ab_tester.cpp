@@ -30,11 +30,15 @@ namespace lsp
         // Plugin UI factory
         static const meta::plugin_t *plugin_uis[] =
         {
-            &meta::ab_tester_mono,
-            &meta::ab_tester_stereo
+            &meta::ab_tester_x2_mono,
+            &meta::ab_tester_x4_mono,
+            &meta::ab_tester_x8_mono,
+            &meta::ab_tester_x2_stereo,
+            &meta::ab_tester_x4_stereo,
+            &meta::ab_tester_x8_stereo
         };
 
-        static ui::Factory factory(plugin_uis, 2);
+        static ui::Factory factory(plugin_uis, 6);
 
     } /* namespace plugui */
 } /* namespace lsp */

@@ -33,22 +33,19 @@ namespace lsp
     {
         typedef struct ab_tester
         {
-            static constexpr float  SAMPLES_MIN         = 0.0f;
-            static constexpr float  SAMPLES_MAX         = 10000.0f;
-            static constexpr float  SAMPLES_DFL         = 0.0f;
-            static constexpr float  SAMPLES_STEP        = 1.0f;
-
-            static constexpr float  TIME_MIN            = 0.0f;
-            static constexpr float  TIME_MAX            = 1000.0f;
-            static constexpr float  TIME_DFL            = 0.0f;
-            static constexpr float  TIME_STEP           = 0.01f;
-
-            static constexpr float  DELAY_OUT_MAX_TIME  = 10000.0f;
+            static constexpr float  RATE_MIN            = 0.0f;
+            static constexpr float  RATE_MAX            = 10.0f;
+            static constexpr float  RATE_DFL            = 0.0f;
+            static constexpr float  RATE_STEP           = 1.0f;
         } ab_tester;
 
         // Plugin type metadata
-        extern const plugin_t ab_tester_mono;
-        extern const plugin_t ab_tester_stereo;
+        extern const plugin_t ab_tester_x2_mono;
+        extern const plugin_t ab_tester_x4_mono;
+        extern const plugin_t ab_tester_x8_mono;
+        extern const plugin_t ab_tester_x2_stereo;
+        extern const plugin_t ab_tester_x4_stereo;
+        extern const plugin_t ab_tester_x8_stereo;
 
     } /* namespace meta */
 } /* namespace lsp */
