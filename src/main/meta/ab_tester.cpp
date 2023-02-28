@@ -56,17 +56,20 @@ namespace lsp
         #define ABTEST_STEREO_CHANNEL(id, label, blind_switch, bte) \
             AUDIO_INPUT("in" id "l", "Audio input " label " Left"), \
             AUDIO_INPUT("in" id "r", "Audio input " label " Right"), \
-            blind_switch(id, label, bte) \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
-            INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE), \
             METER_GAIN("ism" id "l", "Input signal meter " label " Left", GAIN_AMP_P_48_DB), \
-            METER_GAIN("ism" id "r", "Input signal meter " label " Right", GAIN_AMP_P_48_DB)
+            METER_GAIN("ism" id "r", "Input signal meter " label " Right", GAIN_AMP_P_48_DB), \
+            blind_switch(id, label, bte) \
+            INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE) \
 
         #define ABTEST_GLOBAL(max_sel) \
             TRIGGER("rst", "Reset channel rating"), \
             SWITCH("bte", "Blind test enable", 0.0), \
             TRIGGER("shuf", "Re-shuffle channels"), \
             INT_CONTROL_RANGE("sel", "Channel selector", U_NONE, 0, max_sel, 0, 1)
+
+        #define ABTEST_MONO_SWITCH \
+            SWITCH("mono", "Mono switch", 0.0f)
 
         static const port_t ab_tester_x2_mono_ports[] =
         {
@@ -107,6 +110,7 @@ namespace lsp
         {
             AUDIO_OUTPUT_STEREO,
             ABTEST_GLOBAL(2),
+            ABTEST_MONO_SWITCH,
             ABTEST_STEREO_CHANNEL("_1", "1", NO_BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_2", "2", NO_BLIND_SWITCH, 1.0),
             PORTS_END
@@ -116,6 +120,7 @@ namespace lsp
         {
             AUDIO_OUTPUT_STEREO,
             ABTEST_GLOBAL(4),
+            ABTEST_MONO_SWITCH,
             ABTEST_STEREO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),
@@ -127,6 +132,7 @@ namespace lsp
         {
             AUDIO_OUTPUT_STEREO,
             ABTEST_GLOBAL(8),
+            ABTEST_MONO_SWITCH,
             ABTEST_STEREO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),

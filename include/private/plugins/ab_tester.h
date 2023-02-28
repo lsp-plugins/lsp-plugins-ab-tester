@@ -22,7 +22,6 @@
 #ifndef PRIVATE_PLUGINS_AB_TESTER_H_
 #define PRIVATE_PLUGINS_AB_TESTER_H_
 
-#include <lsp-plug.in/dsp-units/util/Delay.h>
 #include <lsp-plug.in/dsp-units/ctl/Bypass.h>
 #include <lsp-plug.in/plug-fw/plug.h>
 #include <private/meta/ab_tester.h>
@@ -32,13 +31,48 @@ namespace lsp
     namespace plugins
     {
         /**
-         * Base class for the latency compensation delay
+         * A/B test plugin with Blind test option
          */
         class ab_tester: public plug::Module
         {
             private:
                 ab_tester & operator = (const ab_tester &);
                 ab_tester (const ab_tester &);
+
+            protected:
+                typedef struct in_channel_t
+                {
+                    dspu::Bypass        sBypass;    // Bypass
+                    float              *vIn;        // Input data
+                    float               fOldGain;   // Old gain value
+                    float               fGain;      // Input gain
+
+                    plug::IPort        *pIn;        // Input data
+                    plug::IPort        *pGain;      // Input gain
+                    plug::IPort        *pInMeter;   // Input level meter
+                } in_channel_t;
+
+                typedef struct out_channel_t
+                {
+                    float              *vOut;       // Output data
+                    plug::IPort        *pOut;       // Output data port
+                } out_channel_t;
+
+            protected:
+                in_channel_t       *vInChannels;    // Input channels
+                out_channel_t      *vOutChannels;   // Output channels
+                size_t              nInChannels;    // Number of input channels
+                size_t              nOutChannels;   // Number of output channels
+                float              *vTmp;           // Temporary buffer
+                bool                bBlindTest;     // Blind test mode
+                bool                bMono;          // Mono listen mode
+                size_t              nSelector;      // Selector
+
+                plug::IPort        *pChannelSel;    // Channel selector
+                plug::IPort        *pBlindTest;     // Blind test switch
+                plug::IPort        *pMono;          // Mono switch
+
+                uint8_t            *pData;          // All allocated data
 
             public:
                 explicit ab_tester(const meta::plugin_t *meta);

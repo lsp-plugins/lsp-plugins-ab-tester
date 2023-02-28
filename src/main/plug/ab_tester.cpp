@@ -28,12 +28,16 @@
 #include <private/plugins/ab_tester.h>
 
 /* The size of temporary buffer for audio processing */
-#define BUFFER_SIZE         0x1000U
-
-#define TRACE_PORT(p)       lsp_trace("  port id=%s", (p)->metadata()->id);
+#define BUFFER_SIZE         0x400U
 
 namespace lsp
 {
+    static plug::IPort *TRACE_PORT(plug::IPort *p)
+    {
+        lsp_trace("  port id=%s", (p)->metadata()->id);
+        return p;
+    }
+
     namespace plugins
     {
         //---------------------------------------------------------------------
@@ -60,6 +64,29 @@ namespace lsp
         ab_tester::ab_tester(const meta::plugin_t *meta):
             Module(meta)
         {
+            vInChannels     = NULL;
+            vOutChannels    = NULL;
+            nInChannels     = 0;
+            nOutChannels    = 0;
+            vTmp            = NULL;
+
+            bBlindTest      = false;
+            bMono           = false;
+            nSelector       = 0;
+
+            pBlindTest      = NULL;
+            pMono           = NULL;
+            pChannelSel     = NULL;
+
+            pData           = NULL;
+
+            for (const meta::port_t *port = meta->ports; ((port != NULL) && (port->id != NULL)); ++port)
+            {
+                if (meta::is_audio_in_port(port))
+                    ++nInChannels;
+                else if (meta::is_audio_out_port(port))
+                    ++nOutChannels;
+            }
         }
 
         ab_tester::~ab_tester()
@@ -71,27 +98,232 @@ namespace lsp
         {
             // Call parent class for initialization
             Module::init(wrapper, ports);
+
+            // Estimate allocation size
+            size_t szof_in_channel      = align_size(sizeof(in_channel_t) * nInChannels, DEFAULT_ALIGN);
+            size_t szof_out_channel     = align_size(sizeof(out_channel_t) * nOutChannels, DEFAULT_ALIGN);
+            size_t szof_buffers         = BUFFER_SIZE * sizeof(float);
+            size_t alloc                = szof_in_channel + szof_out_channel + szof_buffers;
+
+            // Allocate data
+            uint8_t *ptr                = alloc_aligned<uint8_t>(pData, alloc, DEFAULT_ALIGN);
+            if (ptr == NULL)
+                return;
+
+            // Input channels
+            vInChannels                 = reinterpret_cast<in_channel_t *>(ptr);
+            ptr                        += szof_in_channel;
+
+            // Output channels
+            vOutChannels                = reinterpret_cast<out_channel_t *>(ptr);
+            ptr                        += szof_out_channel;
+
+            // Temporary buffer
+            vTmp                        = reinterpret_cast<float *>(ptr);
+            ptr                        += szof_buffers;
+
+            // Initialize input channels
+            for (size_t i=0; i<nInChannels; ++i)
+            {
+                in_channel_t *c     = &vInChannels[i];
+
+                c->sBypass.construct();
+                c->vIn              = NULL;
+
+                c->fOldGain         = GAIN_AMP_0_DB;
+                c->fGain            = GAIN_AMP_0_DB;
+
+                c->pIn              = NULL;
+                c->pGain            = NULL;
+                c->pInMeter         = NULL;
+            }
+
+            // Initialize output channels
+            for (size_t i=0; i<nOutChannels; ++i)
+            {
+                out_channel_t *c    = &vOutChannels[i];
+
+                c->vOut             = NULL;
+                c->pOut             = NULL;
+            }
+
+            // Bind ports
+            lsp_trace("Binding ports");
+            size_t port_id      = 0;
+
+            // Output ports
+            for (size_t i=0; i<nOutChannels; ++i)
+                vOutChannels[i].pOut        = TRACE_PORT(ports[port_id++]);
+
+            // Bind global ports
+            TRACE_PORT(ports[port_id++]); // Reset rating
+            pBlindTest          = TRACE_PORT(ports[port_id++]); // Blind test enable
+            TRACE_PORT(ports[port_id++]); // Re-shuffle
+            pChannelSel         = TRACE_PORT(ports[port_id++]); // Channel selector
+            if (nOutChannels > 1)
+                pMono               = TRACE_PORT(ports[port_id++]);
+
+            // Input ports
+            for (size_t i=0; i<nInChannels; ++i)
+            {
+                in_channel_t *c     = &vInChannels[i];
+
+                if (i % nInChannels == 0)
+                {
+                    c->pIn              = TRACE_PORT(ports[port_id++]);
+                    c->pGain            = TRACE_PORT(ports[port_id++]);
+                    c->pInMeter         = TRACE_PORT(ports[port_id++]);
+                    TRACE_PORT(ports[port_id++]); // Skip rate value
+                    TRACE_PORT(ports[port_id++]); // Skip blind test input switch
+                }
+                else
+                {
+                    in_channel_t *p     = &c[-1];
+                    c->pIn              = TRACE_PORT(ports[port_id++]);
+                    c->pInMeter         = TRACE_PORT(ports[port_id++]);
+                    c->pGain            = p->pGain;
+                }
+            }
         }
 
         void ab_tester::destroy()
         {
             Module::destroy();
+
+            if (pData != NULL)
+            {
+                free_aligned(pData);
+                pData       = NULL;
+            }
         }
 
         void ab_tester::update_sample_rate(long sr)
         {
+            for (size_t i=0; i<nInChannels; ++i)
+            {
+                in_channel_t *c     = &vInChannels[i];
+                c->sBypass.init(sr);
+            }
         }
 
         void ab_tester::update_settings()
         {
+            bBlindTest      = pBlindTest->value() >= 0.5f;
+            bMono           = (pMono != NULL) ? pMono->value() >= 0.5f : false;
+            nSelector       = lsp_min(0.0f, pChannelSel->value());
+
+            for (size_t i=0; i<nInChannels; ++i)
+            {
+                in_channel_t *c     = &vInChannels[i];
+                c->fOldGain         = c->fGain;
+                c->fGain            = c->pGain->value();
+
+                c->sBypass.set_bypass(nSelector != i);
+            }
         }
 
         void ab_tester::process(size_t samples)
         {
+            // Bind input and output buffers
+            for (size_t i=0; i<nInChannels; ++i)
+            {
+                in_channel_t *c     = &vInChannels[i];
+                c->vIn              = c->pIn->buffer<float>();
+            }
+            for (size_t i=0; i<nOutChannels; ++i)
+            {
+                out_channel_t *c    = &vOutChannels[i];
+                c->vOut             = c->pOut->buffer<float>();
+                dsp::fill_zero(c->vOut, samples);
+            }
+
+            // Main processing loop
+            for (size_t offset=0; offset<samples; )
+            {
+                size_t block        = lsp_min(samples - offset, BUFFER_SIZE);
+
+                // Process input channels
+                for (size_t i=0; i<nInChannels; ++i)
+                {
+                    in_channel_t *in     = &vInChannels[i];
+                    out_channel_t *out   = &vOutChannels[i % nOutChannels];
+
+                    dsp::lramp2(vTmp, in->vIn, in->fOldGain, in->fGain, samples);
+                    float level         = (bBlindTest) ? 0.0f : dsp::abs_max(vTmp, samples);
+                    in->sBypass.process(vTmp, NULL, vTmp, samples);
+                    in->pInMeter->set_value(level);
+
+                    // Add input channel to output
+                    dsp::add2(out->vOut, vTmp, samples);
+                }
+
+                // Mono switch
+                if ((nOutChannels > 1) && (bMono))
+                {
+                    float *l        = vOutChannels[0].vOut;
+                    float *r        = vOutChannels[1].vOut;
+                    dsp::lr_to_mid(l, l, r, samples);
+                    dsp::copy(r, l, samples);
+                }
+
+                // Update pointers
+                offset             += block;
+                for (size_t i=0; i<nInChannels; ++i)
+                    vInChannels[i].pIn     += block;
+                for (size_t i=0; i<nOutChannels; ++i)
+                    vOutChannels[i].pOut   += block;
+            }
         }
 
         void ab_tester::dump(dspu::IStateDumper *v) const
         {
+            v->begin_array("vInChannels", vInChannels, nInChannels);
+            for (size_t i=0; i<nInChannels; ++i)
+            {
+                in_channel_t *in     = &vInChannels[i];
+
+                v->begin_object(in, sizeof(in_channel_t));
+                {
+                    v->write_object(&in->sBypass);
+                    v->write("vIn", in->vIn);
+                    v->write("fOldGain", in->fOldGain);
+                    v->write("fGain", in->fGain);
+                    v->write("pIn", in->pIn);
+                    v->write("pGain", in->pGain);
+                    v->write("pInMeter", in->pInMeter);
+                }
+                v->end_object();
+            }
+            v->end_array();
+
+            v->begin_array("vOutChannels", vOutChannels, nOutChannels);
+            for (size_t i=0; i<nOutChannels; ++i)
+            {
+                out_channel_t *out  = &vOutChannels[i];
+
+                v->begin_object(out, sizeof(out_channel_t));
+                {
+                    v->write("vOut", out->vOut);
+                    v->write("pOut", out->pOut);
+                }
+                v->end_object();
+            }
+            v->end_array();
+
+            v->write("nInChannels", nInChannels);
+            v->write("nOutChannels", nOutChannels);
+            v->write("vTmp", vTmp);
+            v->write("bBlindTest", bBlindTest);
+            v->write("bMono", bMono);
+            v->write("nSelector", nSelector);
+            v->write("pChannelSel", pChannelSel);
+            v->write("pBlindTest", pBlindTest);
+            v->write("bMono", bMono);
+            v->write("nSelector", nSelector);
+            v->write("pChannelSel", pChannelSel);
+            v->write("pBlindTest", pBlindTest);
+            v->write("pMono", pMono);
+            v->write("pData", pData);
         }
 
     } /* namespace plugins */
