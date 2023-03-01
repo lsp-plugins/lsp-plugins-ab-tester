@@ -248,13 +248,13 @@ namespace lsp
                     in_channel_t *in     = &vInChannels[i];
                     out_channel_t *out   = &vOutChannels[i % nOutChannels];
 
-                    dsp::lramp2(vTmp, in->vIn, in->fOldGain, in->fGain, samples);
-                    float level         = (bBlindTest) ? 0.0f : dsp::abs_max(vTmp, samples);
-                    in->sBypass.process(vTmp, NULL, vTmp, samples);
+                    dsp::lramp2(vTmp, in->vIn, in->fOldGain, in->fGain, block);
+                    float level         = (bBlindTest) ? 0.0f : dsp::abs_max(vTmp, block);
+                    in->sBypass.process(vTmp, NULL, vTmp, block);
                     in->pInMeter->set_value(level);
 
                     // Add input channel to output
-                    dsp::add2(out->vOut, vTmp, samples);
+                    dsp::add2(out->vOut, vTmp, block);
                 }
 
                 // Mono switch
@@ -262,8 +262,8 @@ namespace lsp
                 {
                     float *l        = vOutChannels[0].vOut;
                     float *r        = vOutChannels[1].vOut;
-                    dsp::lr_to_mid(l, l, r, samples);
-                    dsp::copy(r, l, samples);
+                    dsp::lr_to_mid(l, l, r, block);
+                    dsp::copy(r, l, block);
                 }
 
                 // Update pointers
