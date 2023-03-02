@@ -165,26 +165,32 @@ namespace lsp
 
             // Input ports
             size_t num_inputs   = nInChannels / nOutChannels;
-            for (size_t i=0; i<nInChannels; ++i)
+            for (size_t i=0; i<nInChannels; i += nOutChannels)
             {
-                in_channel_t *c     = &vInChannels[i];
-
-                if (i % nOutChannels == 0)
+                if (nOutChannels == 1)
                 {
+                    in_channel_t *c     = &vInChannels[i];
                     c->pIn              = TRACE_PORT(ports[port_id++]);
                     c->pGain            = TRACE_PORT(ports[port_id++]);
                     c->pInMeter         = TRACE_PORT(ports[port_id++]);
-                    TRACE_PORT(ports[port_id++]); // Skip rate value
-                    if (num_inputs > 2)
-                        TRACE_PORT(ports[port_id++]); // Skip blind test input switch
                 }
                 else
                 {
-                    in_channel_t *p     = &c[-1];
-                    c->pIn              = TRACE_PORT(ports[port_id++]);
-                    c->pInMeter         = TRACE_PORT(ports[port_id++]);
-                    c->pGain            = p->pGain;
+                    in_channel_t *l     = &vInChannels[i];
+                    in_channel_t *r     = &vInChannels[i+1];
+                    l->pIn              = TRACE_PORT(ports[port_id++]);
+                    r->pIn              = TRACE_PORT(ports[port_id++]);
+                    l->pGain            = TRACE_PORT(ports[port_id++]);
+                    r->pGain            = l->pGain;
+                    l->pInMeter         = TRACE_PORT(ports[port_id++]);
+                    r->pInMeter         = TRACE_PORT(ports[port_id++]);
                 }
+
+                // Skip rate value
+                TRACE_PORT(ports[port_id++]);
+                // Skip blind test input switch
+                if (num_inputs > 2)
+                    TRACE_PORT(ports[port_id++]);
             }
         }
 
