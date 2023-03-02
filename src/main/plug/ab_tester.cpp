@@ -164,17 +164,19 @@ namespace lsp
                 pMono               = TRACE_PORT(ports[port_id++]);
 
             // Input ports
+            size_t num_inputs   = nInChannels / nOutChannels;
             for (size_t i=0; i<nInChannels; ++i)
             {
                 in_channel_t *c     = &vInChannels[i];
 
-                if (i % nInChannels == 0)
+                if (i % nOutChannels == 0)
                 {
                     c->pIn              = TRACE_PORT(ports[port_id++]);
                     c->pGain            = TRACE_PORT(ports[port_id++]);
                     c->pInMeter         = TRACE_PORT(ports[port_id++]);
                     TRACE_PORT(ports[port_id++]); // Skip rate value
-                    TRACE_PORT(ports[port_id++]); // Skip blind test input switch
+                    if (num_inputs > 2)
+                        TRACE_PORT(ports[port_id++]); // Skip blind test input switch
                 }
                 else
                 {
