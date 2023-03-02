@@ -269,9 +269,9 @@ namespace lsp
                 // Update pointers
                 offset             += block;
                 for (size_t i=0; i<nInChannels; ++i)
-                    vInChannels[i].pIn     += block;
+                    vInChannels[i].vIn     += block;
                 for (size_t i=0; i<nOutChannels; ++i)
-                    vOutChannels[i].pOut   += block;
+                    vOutChannels[i].vOut   += block;
             }
         }
 
