@@ -218,7 +218,9 @@ namespace lsp
         {
             bBlindTest      = pBlindTest->value() >= 0.5f;
             bMono           = (pMono != NULL) ? pMono->value() >= 0.5f : false;
-            nSelector       = lsp_min(0.0f, pChannelSel->value());
+            nSelector       = lsp_max(0.0f, pChannelSel->value());
+
+            lsp_trace("selector = %d", int(nSelector));
 
             for (size_t i=0; i<nInChannels; ++i)
             {

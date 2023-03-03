@@ -1,3 +1,76 @@
 <plugin resizable="true">
+	<ui:set id="channels"
+		value="${(ex :in_8l or ex :in_8) ? 8 : (ex :in_4l or ex :in_4) ? 4 : 2}"/>
+	<ui:set id="stereo" value="${ex :out_l or ex :out_r}"/>
 
+	<vbox>
+		<!-- Heading buttons -->
+		<hbox>
+			<button id="rst" text="actions.ab_tester.reset_rate" />
+			<button id="bte" text="actions.ab_tester.blind_test" />
+			<button id="shuf" text="actions.ab_tester.reshuffle" />
+			<ui:if test=":stereo">
+				<button id="mono" text="labels.chan.mono" />
+			</ui:if>
+		</hbox>
+		
+		<!-- Channels -->
+		<grid rows="${:channels * 2}" cols="${(:channels igt 2) ? 5 : 4}">
+			<ui:for id="i" first="1" count=":channels">
+				<!-- row 1 -->
+				<ui:if test=":channels igt 2">
+					<cell rows="2">
+						<button id="bte_${i}" text="labels.chan.on" />
+					</cell>
+				</ui:if>
+				<cell cols="2">
+					<edit ui:id="channel_label_${i}" hfill="true" hexpand="true" />
+				</cell>
+				<cell rows="2">
+					<vbox>
+						<label text="labels.gain" />
+						<knob id="g_${i}" />
+						<value id="g_${i}" same_line="true" />
+					</vbox>
+				</cell>
+				<cell rows="2">
+					<button id="sel" text="actions.ab_tester.select" value="${:i - 1}" />
+				</cell>
+				
+				<!-- row 2 -->
+				<ledmeter height.min="256" vexpand="true" angle="0">
+					<ui:if test="!:stereo">
+						<ledchannel
+							id="ism_${i}"
+							min="-72 db"
+							max="12 db"
+							log="true"
+							type="rms_peak"
+							peak.visibility="true" />
+					</ui:if>
+					<ui:if test=":stereo">
+						<ledchannel
+							id="ism_${i}l"
+							min="-72 db"
+							max="12 db"
+							log="true"
+							type="rms_peak"
+							peak.visibility="true" />
+						<ledchannel
+							id="ism_${i}r"
+							min="-72 db"
+							max="12 db"
+							log="true"
+							type="rms_peak"
+							peak.visibility="true" />
+					</ui:if>
+				</ledmeter>
+				<hbox>
+					<ui:for id="j" count="10">
+						<button ui:id="rating_${i}_${j}" />
+					</ui:for>
+				</hbox>
+			</ui:for>
+		</grid>
+	</vbox>
 </plugin>
