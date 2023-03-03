@@ -33,10 +33,10 @@ namespace lsp
     {
         typedef struct ab_tester
         {
-            static constexpr float  RATE_MIN            = 0.0f;
-            static constexpr float  RATE_MAX            = 10.0f;
-            static constexpr float  RATE_DFL            = 0.0f;
-            static constexpr float  RATE_STEP           = 1.0f;
+            static constexpr size_t RATE_MIN            = 1;
+            static constexpr size_t RATE_MAX            = 10;
+            static constexpr size_t RATE_DFL            = 1;
+            static constexpr size_t RATE_STEP           = 1;
         } ab_tester;
 
         // Plugin type metadata
