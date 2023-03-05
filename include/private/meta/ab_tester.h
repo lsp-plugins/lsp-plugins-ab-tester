@@ -35,7 +35,7 @@ namespace lsp
         {
             static constexpr size_t RATE_MIN            = 1;
             static constexpr size_t RATE_MAX            = 10;
-            static constexpr size_t RATE_DFL            = 1;
+            static constexpr size_t RATE_DFL            = 5;
             static constexpr size_t RATE_STEP           = 1;
         } ab_tester;
 

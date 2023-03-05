@@ -44,6 +44,9 @@ namespace lsp
                 typedef struct channel_t
                 {
                     rating_t                    sRating;
+                    size_t                      nIndex;         // Absolute index of the channel
+                    tk::Edit                   *wName;          // Edit that holds channel name
+                    bool                        bNameChanged;   // Indicator that channel name has changed
                 } channel_t;
 
             protected:
@@ -53,11 +56,14 @@ namespace lsp
 
             protected:
                 channel_t          *create_channel(size_t channel_id);
+                void                set_channel_name(core::KVTStorage *kvt, int id, const char *name);
+                void                sync_channel_names(core::KVTStorage *kvt);
 
                 void                update_rating(rating_t *rate);
 
             protected:
                 static status_t     slot_rating_button_change(tk::Widget *sender, void *ptr, void *data);
+                static status_t     slot_channel_name_updated(tk::Widget *sender, void *ptr, void *data);
 
             public:
                 explicit ab_tester_ui(const meta::plugin_t *meta);
@@ -69,6 +75,12 @@ namespace lsp
                 virtual status_t    post_init() override;
 
                 virtual void        notify(ui::IPort *port) override;
+
+                virtual void        idle() override;
+
+                virtual void        kvt_changed(core::KVTStorage *kvt, const char *id, const core::kvt_param_t *value) override;
+
+                virtual status_t    reset_settings() override;
         };
     } /* namespace plugui */
 } /* namespace lsp */
