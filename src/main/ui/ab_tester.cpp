@@ -99,19 +99,24 @@ namespace lsp
             // Bind rating buttons
             for (size_t i=meta::ab_tester::RATE_MIN; i<=meta::ab_tester::RATE_MAX; i += meta::ab_tester::RATE_STEP)
             {
-                // Find button widget
-                id.fmt_ascii("rating_%d_%d", int(c->nIndex), int(i));
-                tk::Button *btn = reg->get<tk::Button>(&id);
-                if (btn != NULL)
+                // Find button widget for rating
+                for (size_t j=0; j<2; ++j)
                 {
-                    c->sRating.vButtons.add(btn);
-                    btn->slots()->bind(tk::SLOT_CHANGE, slot_rating_button_change, &c->sRating);
+                    id.fmt_ascii("%s_%d_%d",
+                        (j == 0) ? "rating" : "bte_rating",
+                        int(c->nIndex), int(i));
+                    tk::Button *btn = reg->get<tk::Button>(&id);
+                    if (btn != NULL)
+                    {
+                        c->vRating[j].vButtons.add(btn);
+                        btn->slots()->bind(tk::SLOT_CHANGE, slot_rating_button_change, c);
+                    }
                 }
             }
             id.fmt_ascii("rate_%d", int(c->nIndex));
-            c->sRating.pPort    = pWrapper->port(&id);
-            if (c->sRating.pPort != NULL)
-                c->sRating.pPort->bind(this);
+            c->pRating  = pWrapper->port(&id);
+            if (c->pRating != NULL)
+                c->pRating->bind(this);
 
             id.fmt_ascii("channel_label_%d", int(c->nIndex));
             c->wName            = reg->get<tk::Edit>(&id);
@@ -147,8 +152,12 @@ namespace lsp
                 }
             }
 
-            // TODO
+            tk::Registry *reg = pWrapper->controller()->widgets();
 
+            // Bind event for blind test button
+            tk::Button *bte_button  = reg->get<tk::Button>("bte_button");
+            if (bte_button != NULL)
+                bte_button->slots()->bind(tk::SLOT_CHANGE, slot_blind_test_change, this);
 
             return STATUS_OK;
         }
@@ -161,25 +170,31 @@ namespace lsp
                 if (c == NULL)
                     continue;
 
-                if (c->sRating.pPort == port)
-                    update_rating(&c->sRating);
+                if (c->pRating == port)
+                    update_rating(c);
             }
         }
 
-        void ab_tester_ui::update_rating(rating_t *rate)
+        void ab_tester_ui::update_rating(channel_t *ch)
         {
-            if (rate->pPort == NULL)
+            if (ch->pRating == NULL)
                 return;
 
-            size_t value = rate->pPort->value();
-            size_t max = meta::ab_tester::RATE_MIN;
-            for (size_t i=0, n=rate->vButtons.size(); i<n; ++i, max +=  meta::ab_tester::RATE_STEP)
-            {
-                tk::Button *btn = rate->vButtons.uget(i);
-                if (btn == NULL)
-                    continue;
+            size_t value = ch->pRating->value();
 
-                btn->down()->set(max <= value);
+            for (size_t j=0; j<2; ++j)
+            {
+                rating_t *r = &ch->vRating[j];
+                size_t max  = meta::ab_tester::RATE_MIN;
+
+                for (size_t i=0, n=r->vButtons.size(); i<n; ++i, max += meta::ab_tester::RATE_STEP)
+                {
+                    tk::Button *btn = r->vButtons.uget(i);
+                    if (btn == NULL)
+                        continue;
+
+                    btn->down()->set(max <= value);
+                }
             }
         }
 
@@ -189,22 +204,42 @@ namespace lsp
             if (btn == NULL)
                 return STATUS_OK;
 
-            rating_t *rate = static_cast<rating_t *>(ptr);
-            if (rate->pPort == NULL)
+            channel_t *c = static_cast<channel_t *>(ptr);
+            if (c->pRating == NULL)
                 return STATUS_OK;
 
             // Update port value
-            size_t max = meta::ab_tester::RATE_MIN;
-            for (size_t i=0, n=rate->vButtons.size(); i<n; ++i, max +=  meta::ab_tester::RATE_STEP)
+            for (size_t j=0; j<2; ++j)
             {
-                tk::Button *rate_btn = rate->vButtons.uget(i);
-                if (btn == rate_btn)
+                rating_t *r = &c->vRating[j];
+                size_t max  = meta::ab_tester::RATE_MIN;
+
+                for (size_t i=0, n=r->vButtons.size(); i<n; ++i, max +=  meta::ab_tester::RATE_STEP)
                 {
-                    rate->pPort->set_value(max);
-                    rate->pPort->notify_all();
-                    break;
+                    tk::Button *rate_btn = r->vButtons.uget(i);
+                    if (btn == rate_btn)
+                    {
+                        c->pRating->set_value(max);
+                        c->pRating->notify_all();
+                        break;
+                    }
                 }
             }
+
+            return STATUS_OK;
+        }
+
+        status_t ab_tester_ui::slot_blind_test_change(tk::Widget *sender, void *ptr, void *data)
+        {
+            ab_tester_ui *this_ = static_cast<ab_tester_ui *>(ptr);
+            if (this_ == NULL)
+                return STATUS_OK;
+
+            tk::Button *btn = tk::widget_cast<tk::Button>(sender);
+            if (btn == NULL)
+                return STATUS_OK;
+
+            this_->blind_test_change(btn);
 
             return STATUS_OK;
         }
@@ -321,7 +356,23 @@ namespace lsp
                 // Submit new value to KVT
                 set_channel_name(kvt, c->nIndex, value.get_utf8());
             }
+        }
 
+        void ab_tester_ui::blind_test_change(tk::Button *btn)
+        {
+            // Is blind test activated?
+            if (btn->down()->get())
+            {
+                for (size_t i=0, n=vChannels.size(); i<n; ++i)
+                {
+                    channel_t *c = vChannels.uget(i);
+                    if ((c == NULL) || (c->pRating == NULL))
+                        continue;
+
+                    c->pRating->set_default();
+                    c->pRating->notify_all();
+                }
+            }
         }
 
     } /* namespace plugui */

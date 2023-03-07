@@ -7,7 +7,7 @@
 		<!-- Heading buttons -->
 		<hbox>
 			<button id="rst" text="actions.ab_tester.reset_rate" />
-			<button id="bte" text="actions.ab_tester.blind_test" />
+			<button ui:id="bte_button" id="bte" text="actions.ab_tester.blind_test" />
 			<button id="shuf" text="actions.ab_tester.reshuffle" />
 			<ui:if test=":stereo">
 				<button id="mono" text="labels.chan.mono" />
@@ -15,7 +15,7 @@
 		</hbox>
 		
 		<!-- Channels -->
-		<grid rows="${:channels * 2}" cols="${(:channels igt 2) ? 5 : 4}">
+		<grid rows="${:channels * 2}" cols="${(:channels igt 2) ? 5 : 4}" visibility="not :bte">
 			<ui:for id="i" first="1" count=":channels">
 				<!-- row 1 -->
 				<ui:if test=":channels igt 2">
@@ -38,7 +38,7 @@
 				</cell>
 				
 				<!-- row 2 -->
-				<ledmeter height.min="256" vexpand="true" angle="0">
+				<ledmeter height.min="16" vexpand="true" angle="0">
 					<ui:if test="!:stereo">
 						<ledchannel
 							id="ism_${i}"
@@ -65,11 +65,22 @@
 							peak.visibility="true" />
 					</ui:if>
 				</ledmeter>
-				<hbox>
+				<hbox hfill="false">
 					<ui:for id="j" first="1" count="10">
 						<button ui:id="rating_${i}_${j}" />
 					</ui:for>
 				</hbox>
+			</ui:for>
+		</grid>
+		<grid rows="${:channels}" cols="3" visibility=":bte">
+			<ui:for id="i" first="1" count=":channels">
+				<label ui:id="bte_label_${i}" text="labels.chan.num_id" text:id="${i}"/>
+				<hbox ui:id="bte_rating_${i}" hfill="false">
+					<ui:for id="j" first="1" count="10">
+						<button ui:id="bte_rating_${i}_${j}" />
+					</ui:for>
+				</hbox>
+				<button  ui:id="bte_selector_${i}" id="sel" text="actions.ab_tester.select" value="${:i - 1}" />
 			</ui:for>
 		</grid>
 	</vbox>

@@ -38,15 +38,15 @@ namespace lsp
                 typedef struct rating_t
                 {
                     lltl::parray<tk::Button>    vButtons;
-                    ui::IPort                  *pPort;
                 } rating_t;
 
                 typedef struct channel_t
                 {
-                    rating_t                    sRating;
+                    rating_t                    vRating[2];     // Rating indicator, blnd rating indicator
                     size_t                      nIndex;         // Absolute index of the channel
                     tk::Edit                   *wName;          // Edit that holds channel name
                     bool                        bNameChanged;   // Indicator that channel name has changed
+                    ui::IPort                  *pRating;        // Rating port
                 } channel_t;
 
             protected:
@@ -59,11 +59,13 @@ namespace lsp
                 void                set_channel_name(core::KVTStorage *kvt, int id, const char *name);
                 void                sync_channel_names(core::KVTStorage *kvt);
 
-                void                update_rating(rating_t *rate);
+                void                update_rating(channel_t *ch);
+                void                blind_test_change(tk::Button *btn);
 
             protected:
                 static status_t     slot_rating_button_change(tk::Widget *sender, void *ptr, void *data);
                 static status_t     slot_channel_name_updated(tk::Widget *sender, void *ptr, void *data);
+                static status_t     slot_blind_test_change(tk::Widget *sender, void *ptr, void *data);
 
             public:
                 explicit ab_tester_ui(const meta::plugin_t *meta);
