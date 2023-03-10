@@ -44,15 +44,35 @@ namespace lsp
                 {
                     rating_t                    vRating[2];     // Rating indicator, blnd rating indicator
                     size_t                      nIndex;         // Absolute index of the channel
+                    int                         nRandom;        // Random number for shuffling
+
                     tk::Edit                   *wName;          // Edit that holds channel name
+                    tk::Label                  *wBlindLabel;    // Blind label marker
+                    tk::Widget                 *wBlindRating;   // Blind rating container
+                    tk::Widget                 *wBlindSelector; // Blind selector
+
                     bool                        bNameChanged;   // Indicator that channel name has changed
+
+                    ui::IPort                  *pEnable;        // Enable blind test
                     ui::IPort                  *pRating;        // Rating port
                 } channel_t;
 
             protected:
                 size_t                      nInChannels;
                 size_t                      nOutChannels;
-                lltl::parray<channel_t>     vChannels;
+
+                ui::IPort                  *pSelector;          // Blind channel selector
+                ui::IPort                  *pReset;             // Reset port
+                ui::IPort                  *pShuffle;           // Shuffle port
+                ui::IPort                  *pBlindTest;         // Blind test
+
+                tk::Grid                   *wBlindGrid;         // Grid with blind test widgets
+
+                lltl::parray<channel_t>     vChannels;          // List of channels
+                lltl::parray<channel_t>     vShuffled;          // Shuffled channels
+
+            protected:
+                static ssize_t      cmp_channels(const channel_t *a, const channel_t *b);
 
             protected:
                 channel_t          *create_channel(size_t channel_id);
@@ -60,12 +80,14 @@ namespace lsp
                 void                sync_channel_names(core::KVTStorage *kvt);
 
                 void                update_rating(channel_t *ch);
-                void                blind_test_change(tk::Button *btn);
+                void                reset_ratings();
+                void                blind_test_enable();
+                void                shuffle_data();
+                void                update_blind_grid();
 
             protected:
                 static status_t     slot_rating_button_change(tk::Widget *sender, void *ptr, void *data);
                 static status_t     slot_channel_name_updated(tk::Widget *sender, void *ptr, void *data);
-                static status_t     slot_blind_test_change(tk::Widget *sender, void *ptr, void *data);
 
             public:
                 explicit ab_tester_ui(const meta::plugin_t *meta);

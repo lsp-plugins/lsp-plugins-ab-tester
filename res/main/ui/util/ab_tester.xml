@@ -7,7 +7,7 @@
 		<!-- Heading buttons -->
 		<hbox>
 			<button id="rst" text="actions.ab_tester.reset_rate" />
-			<button ui:id="bte_button" id="bte" text="actions.ab_tester.blind_test" />
+			<button id="bte" text="actions.ab_tester.blind_test" />
 			<button id="shuf" text="actions.ab_tester.reshuffle" />
 			<ui:if test=":stereo">
 				<button id="mono" text="labels.chan.mono" />
@@ -72,7 +72,7 @@
 				</hbox>
 			</ui:for>
 		</grid>
-		<grid rows="${:channels}" cols="3" visibility=":bte">
+		<grid ui:id="bte_grid" rows="${:channels}" cols="3" visibility=":bte">
 			<ui:for id="i" first="1" count=":channels">
 				<label ui:id="bte_label_${i}" text="labels.chan.num_id" text:id="${i}"/>
 				<hbox ui:id="bte_rating_${i}" hfill="false">

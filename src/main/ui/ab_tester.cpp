@@ -66,6 +66,12 @@ namespace lsp
                 else if (meta::is_audio_out_port(port))
                     ++nOutChannels;
             }
+
+            pReset          = NULL;
+            pShuffle        = NULL;
+            pBlindTest      = NULL;
+
+            wBlindGrid      = NULL;
         }
 
         ab_tester_ui::~ab_tester_ui()
@@ -95,6 +101,7 @@ namespace lsp
             LSPString id;
             tk::Registry *reg = pWrapper->controller()->widgets();
             c->nIndex           = channel_id + 1;
+            c->nRandom          = 0;
 
             // Bind rating buttons
             for (size_t i=meta::ab_tester::RATE_MIN; i<=meta::ab_tester::RATE_MAX; i += meta::ab_tester::RATE_STEP)
@@ -118,6 +125,9 @@ namespace lsp
             if (c->pRating != NULL)
                 c->pRating->bind(this);
 
+            id.fmt_ascii("bte_%d", int(c->nIndex));
+            c->pEnable = pWrapper->port(&id);
+
             id.fmt_ascii("channel_label_%d", int(c->nIndex));
             c->wName            = reg->get<tk::Edit>(&id);
             if (c->wName != NULL)
@@ -128,6 +138,13 @@ namespace lsp
                 c->wName->slots()->bind(tk::SLOT_CHANGE, slot_channel_name_updated, c);
             }
             c->bNameChanged     = false;
+
+            id.fmt_ascii("bte_label_%d", int(c->nIndex));
+            c->wBlindLabel      = reg->get<tk::Label>(&id);
+            id.fmt_ascii("bte_rating_%d", int(c->nIndex));
+            c->wBlindRating     = reg->find(&id);
+            id.fmt_ascii("bte_selector_%d", int(c->nIndex));
+            c->wBlindSelector   = reg->find(&id);
 
             return c;
         }
@@ -154,16 +171,46 @@ namespace lsp
 
             tk::Registry *reg = pWrapper->controller()->widgets();
 
-            // Bind event for blind test button
-            tk::Button *bte_button  = reg->get<tk::Button>("bte_button");
-            if (bte_button != NULL)
-                bte_button->slots()->bind(tk::SLOT_CHANGE, slot_blind_test_change, this);
+            // Bind events
+            pSelector               = pWrapper->port("sel");
+
+            pReset                  = pWrapper->port("rst");
+            if (pReset != NULL)
+                pReset->bind(this);
+
+            pShuffle                = pWrapper->port("shuf");
+            if (pShuffle != NULL)
+                pShuffle->bind(this);
+
+            pBlindTest              = pWrapper->port("bte");
+            if (pBlindTest != NULL)
+                pBlindTest->bind(this);
+
+            wBlindGrid              = reg->get<tk::Grid>("bte_grid");
 
             return STATUS_OK;
         }
 
         void ab_tester_ui::notify(ui::IPort *port)
         {
+            if (port == pBlindTest)
+            {
+                if (pBlindTest->value() >= 0.5f)
+                    blind_test_enable();
+            }
+
+            if (port == pReset)
+            {
+                if (pReset->value() >= 0.5f)
+                    reset_ratings();
+            }
+
+            if (port == pShuffle)
+            {
+                if (pShuffle->value() >= 0.5f)
+                    shuffle_data();
+            }
+
             for (size_t i=0, n=vChannels.size(); i<n; ++i)
             {
                 channel_t *c = vChannels.uget(i);
@@ -225,21 +272,6 @@ namespace lsp
                     }
                 }
             }
-
-            return STATUS_OK;
-        }
-
-        status_t ab_tester_ui::slot_blind_test_change(tk::Widget *sender, void *ptr, void *data)
-        {
-            ab_tester_ui *this_ = static_cast<ab_tester_ui *>(ptr);
-            if (this_ == NULL)
-                return STATUS_OK;
-
-            tk::Button *btn = tk::widget_cast<tk::Button>(sender);
-            if (btn == NULL)
-                return STATUS_OK;
-
-            this_->blind_test_change(btn);
 
             return STATUS_OK;
         }
@@ -358,23 +390,101 @@ namespace lsp
             }
         }
 
-        void ab_tester_ui::blind_test_change(tk::Button *btn)
+        void ab_tester_ui::reset_ratings()
         {
-            // Is blind test activated?
-            if (btn->down()->get())
+            for (size_t i=0, n=vChannels.size(); i<n; ++i)
             {
-                for (size_t i=0, n=vChannels.size(); i<n; ++i)
-                {
-                    channel_t *c = vChannels.uget(i);
-                    if ((c == NULL) || (c->pRating == NULL))
-                        continue;
+                channel_t *c = vChannels.uget(i);
+                if ((c == NULL) || (c->pRating == NULL))
+                    continue;
 
-                    c->pRating->set_default();
-                    c->pRating->notify_all();
-                }
+                c->pRating->set_default();
+                c->pRating->notify_all();
             }
         }
 
+        ssize_t ab_tester_ui::cmp_channels(const channel_t *a, const channel_t *b)
+        {
+            if (a->nRandom == b->nRandom)
+                return 0;
+
+            return (a->nRandom < b->nRandom) ? -1 : 1;
+        }
+
+        void ab_tester_ui::shuffle_data()
+        {
+            // Re-shuffle channels
+            for (size_t i=0, n=vShuffled.size(); i<n; ++i)
+            {
+                channel_t *c    = vShuffled.uget(i);
+                if (c == NULL)
+                    continue;
+
+                c->nRandom      = rand();
+            }
+            vShuffled.qsort(cmp_channels);
+
+            // Update blind selector
+            int index = rand() % vShuffled.size();
+            if (pSelector != NULL)
+            {
+                channel_t *c    = vShuffled.uget(index);
+                pSelector->set_value(c->nIndex-1);
+                pSelector->notify_all();
+            }
+
+            // TODO: store shuffle state
+
+            update_blind_grid();
+        }
+
+        void ab_tester_ui::update_blind_grid()
+        {
+            // Update grid
+            if (wBlindGrid == NULL)
+                return;
+
+            wBlindGrid->remove_all();
+
+            for (size_t i=0, n=vShuffled.size(); i<n; ++i)
+            {
+                channel_t *c    = vShuffled.uget(i);
+                if (c == NULL)
+                    continue;
+
+//                c->wBlindLabel->text()->params()->set_int("id", i + 1);
+                wBlindGrid->add(c->wBlindLabel);
+                wBlindGrid->add(c->wBlindRating);
+                wBlindGrid->add(c->wBlindSelector);
+            }
+        }
+
+        void ab_tester_ui::blind_test_enable()
+        {
+            // Form list of ports for shuffling
+            vShuffled.clear();
+            for (size_t i=0, n=vChannels.size(); i<n; ++i)
+            {
+                channel_t *c = vChannels.uget(i);
+                if (c == NULL)
+                    continue;
+                bool enabled = (c->pEnable != NULL) ? c->pEnable->value() >= 0.5f : true;
+                if (enabled)
+                {
+                    if (!vShuffled.add(c))
+                        return;
+                }
+            }
+            if (vShuffled.size() < 2)
+            {
+                pBlindTest->set_value(0.0f);
+                pBlindTest->notify_all();
+                return;
+            }
+
+            reset_ratings();
+            shuffle_data();
+        }
     } /* namespace plugui */
 } /* namespace lsp */
 
