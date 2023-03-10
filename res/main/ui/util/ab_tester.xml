@@ -15,7 +15,12 @@
 		</hbox>
 		
 		<!-- Channels -->
-		<grid rows="${:channels * 2}" cols="${(:channels igt 2) ? 5 : 4}" visibility="not :bte">
+		<grid rows="${:channels * 2 + 1}" cols="${(:channels igt 2) ? 5 : 4}" visibility="not :bte">
+			<cell cols="${(:channels igt 2) ? 4 : 3}">
+				<void />
+			</cell>
+			<button id="sel" text="actions.ab_tester.select" value="0" />
+		
 			<ui:for id="i" first="1" count=":channels">
 				<!-- row 1 -->
 				<ui:if test=":channels igt 2">
@@ -34,7 +39,7 @@
 					</vbox>
 				</cell>
 				<cell rows="2">
-					<button id="sel" text="actions.ab_tester.select" value="${:i - 1}" />
+					<button id="sel" text="actions.ab_tester.select" value="${i}" />
 				</cell>
 				
 				<!-- row 2 -->
@@ -73,6 +78,11 @@
 			</ui:for>
 		</grid>
 		<grid ui:id="bte_grid" rows="${:channels}" cols="3" visibility=":bte">
+			<cell cols="2">
+				<void ui:id="bte_void" />
+			</cell>
+			<button ui:id="bte_selector_0" id="sel" text="actions.ab_tester.select" value="0" />
+			
 			<ui:for id="i" first="1" count=":channels">
 				<label ui:id="bte_label_${i}" text="labels.chan.num_id" text:id="${i}"/>
 				<hbox ui:id="bte_rating_${i}" hfill="false">
@@ -80,8 +90,9 @@
 						<button ui:id="bte_rating_${i}_${j}" />
 					</ui:for>
 				</hbox>
-				<button  ui:id="bte_selector_${i}" id="sel" text="actions.ab_tester.select" value="${:i - 1}" />
+				<button ui:id="bte_selector_${i}" id="sel" text="actions.ab_tester.select" value="${i}" />
 			</ui:for>
 		</grid>
+		<void expand="true" />
 	</vbox>
 </plugin>

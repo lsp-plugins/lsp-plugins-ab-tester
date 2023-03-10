@@ -67,6 +67,8 @@ namespace lsp
                 ui::IPort                  *pBlindTest;         // Blind test
 
                 tk::Grid                   *wBlindGrid;         // Grid with blind test widgets
+                tk::Widget                 *wBlindVoid;         // Blind void padding widget
+                tk::Widget                 *wBlindSelector;     // Blind selector widget
 
                 lltl::parray<channel_t>     vChannels;          // List of channels
                 lltl::parray<channel_t>     vShuffled;          // Shuffled channels

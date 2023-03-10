@@ -228,7 +228,7 @@ namespace lsp
                 c->fOldGain         = c->fGain;
                 c->fGain            = c->pGain->value();
 
-                c->sBypass.set_bypass(nSelector != i);
+                c->sBypass.set_bypass(nSelector != (i + 1));
             }
         }
 

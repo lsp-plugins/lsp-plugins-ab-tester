@@ -74,7 +74,7 @@ namespace lsp
         static const port_t ab_tester_x2_mono_ports[] =
         {
             AUDIO_OUTPUT_MONO,
-            ABTEST_GLOBAL(2),
+            ABTEST_GLOBAL(3),
             ABTEST_MONO_CHANNEL("_1", "1", NO_BLIND_SWITCH, 1.0),
             ABTEST_MONO_CHANNEL("_2", "2", NO_BLIND_SWITCH, 1.0),
             PORTS_END
@@ -83,7 +83,7 @@ namespace lsp
         static const port_t ab_tester_x4_mono_ports[] =
         {
             AUDIO_OUTPUT_MONO,
-            ABTEST_GLOBAL(4),
+            ABTEST_GLOBAL(5),
             ABTEST_MONO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
             ABTEST_MONO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
             ABTEST_MONO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),
@@ -94,7 +94,7 @@ namespace lsp
         static const port_t ab_tester_x8_mono_ports[] =
         {
             AUDIO_OUTPUT_MONO,
-            ABTEST_GLOBAL(8),
+            ABTEST_GLOBAL(9),
             ABTEST_MONO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
             ABTEST_MONO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
             ABTEST_MONO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),
@@ -109,7 +109,7 @@ namespace lsp
         static const port_t ab_tester_x2_stereo_ports[] =
         {
             AUDIO_OUTPUT_STEREO,
-            ABTEST_GLOBAL(2),
+            ABTEST_GLOBAL(3),
             ABTEST_MONO_SWITCH,
             ABTEST_STEREO_CHANNEL("_1", "1", NO_BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_2", "2", NO_BLIND_SWITCH, 1.0),
@@ -119,7 +119,7 @@ namespace lsp
         static const port_t ab_tester_x4_stereo_ports[] =
         {
             AUDIO_OUTPUT_STEREO,
-            ABTEST_GLOBAL(4),
+            ABTEST_GLOBAL(5),
             ABTEST_MONO_SWITCH,
             ABTEST_STEREO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
@@ -131,7 +131,7 @@ namespace lsp
         static const port_t ab_tester_x8_stereo_ports[] =
         {
             AUDIO_OUTPUT_STEREO,
-            ABTEST_GLOBAL(8),
+            ABTEST_GLOBAL(9),
             ABTEST_MONO_SWITCH,
             ABTEST_STEREO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
             ABTEST_STEREO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),

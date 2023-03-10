@@ -67,11 +67,14 @@ namespace lsp
                     ++nOutChannels;
             }
 
+            pSelector       = NULL;
             pReset          = NULL;
             pShuffle        = NULL;
             pBlindTest      = NULL;
 
             wBlindGrid      = NULL;
+            wBlindVoid      = NULL;
+            wBlindSelector  = NULL;
         }
 
         ab_tester_ui::~ab_tester_ui()
@@ -187,6 +190,8 @@ namespace lsp
                 pBlindTest->bind(this);
 
             wBlindGrid              = reg->get<tk::Grid>("bte_grid");
+            wBlindVoid              = reg->find("bte_void");
+            wBlindSelector          = reg->find("bte_selector_0");
 
             return STATUS_OK;
         }
@@ -424,12 +429,10 @@ namespace lsp
             }
             vShuffled.qsort(cmp_channels);
 
-            // Update blind selector
-            int index = rand() % vShuffled.size();
+            // Clear blind test selector
             if (pSelector != NULL)
             {
-                channel_t *c    = vShuffled.uget(index);
-                pSelector->set_value(c->nIndex-1);
+                pSelector->set_value(0);
                 pSelector->notify_all();
             }
 
@@ -445,6 +448,8 @@ namespace lsp
                 return;
 
             wBlindGrid->remove_all();
+            wBlindGrid->add(wBlindVoid, 1, 2);
+            wBlindGrid->add(wBlindSelector);
 
             for (size_t i=0, n=vShuffled.size(); i<n; ++i)
             {
