@@ -227,8 +227,9 @@ namespace lsp
                 in_channel_t *c     = &vInChannels[i];
                 c->fOldGain         = c->fGain;
                 c->fGain            = c->pGain->value();
+                size_t chan_id      = (i / nOutChannels) + 1;
 
-                c->sBypass.set_bypass(nSelector != (i + 1));
+                c->sBypass.set_bypass(nSelector != chan_id);
             }
         }
 

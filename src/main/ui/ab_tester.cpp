@@ -52,6 +52,9 @@ namespace lsp
         static ui::Factory factory(ui_factory, plugin_uis, 6);
 
         //---------------------------------------------------------------------
+        static const char *KVT_SHUFFLE_INDICES = "/shuffle_indices";
+
+        //---------------------------------------------------------------------
         // A/B tester UI
         ab_tester_ui::ab_tester_ui(const meta::plugin_t *meta):
             ui::Module(meta)
@@ -75,6 +78,8 @@ namespace lsp
             wBlindGrid      = NULL;
             wBlindVoid      = NULL;
             wBlindSelector  = NULL;
+            wSelectAll      = NULL;
+            wSelectNone     = NULL;
         }
 
         ab_tester_ui::~ab_tester_ui()
@@ -192,6 +197,13 @@ namespace lsp
             wBlindGrid              = reg->get<tk::Grid>("bte_grid");
             wBlindVoid              = reg->find("bte_void");
             wBlindSelector          = reg->find("bte_selector_0");
+
+            wSelectAll              = reg->get<tk::Button>("select_all");
+            if (wSelectAll != NULL)
+                wSelectAll->slots()->bind(tk::SLOT_CHANGE, slot_select_updated, this);
+            wSelectNone             = reg->get<tk::Button>("select_none");
+            if (wSelectNone != NULL)
+                wSelectNone->slots()->bind(tk::SLOT_CHANGE, slot_select_updated, this);
 
             return STATUS_OK;
         }
@@ -350,6 +362,30 @@ namespace lsp
                     }
                 }
             }
+            else if ((value->type == core::KVT_UINT32) && (strcmp(id, KVT_SHUFFLE_INDICES) == 0))
+            {
+                // Update shuffle state
+                vShuffled.clear();
+                uint32_t shuffle_data = value->u32;
+                for (size_t i=0; i<8; ++i)
+                {
+                    size_t idx      = (shuffle_data >> (4 * i)) & 0xf;
+                    if (!(idx & 0x8))
+                        continue;
+                    idx            &= 0x7;
+
+                    // Commit value to shuffled array
+                    channel_t *c    = vChannels.get(idx);
+                    if (c == NULL)
+                        continue;
+                    if (vShuffled.contains(c))
+                        continue;
+                    vShuffled.add(c);
+                }
+
+                // Upate grid
+                update_blind_grid();
+            }
         }
 
         status_t ab_tester_ui::reset_settings()
@@ -436,9 +472,32 @@ namespace lsp
                 pSelector->notify_all();
             }
 
-            // TODO: store shuffle state
+            // Store shuffle state
+            uint32_t shuffle_data = 0;
+            for (size_t i=0, n=vShuffled.size(); i<n; ++i)
+            {
+                channel_t *c    = vShuffled.uget(i);
+                if (c == NULL)
+                    continue;
 
-            update_blind_grid();
+                shuffle_data   |= (((c->nIndex-1) & 0x7) | 0x8) << (4 * i);
+            }
+
+            core::KVTStorage *kvt = pWrapper->kvt_lock();
+            if (kvt != NULL)
+            {
+                lsp_finally { pWrapper->kvt_release(); };
+
+                core::kvt_param_t kparam;
+                kparam.type     = core::KVT_UINT32;
+                kparam.u32      = shuffle_data;
+
+                lsp_trace("%s = 0x%x", KVT_SHUFFLE_INDICES, int(kparam.u32));
+                kvt->put(KVT_SHUFFLE_INDICES, &kparam, core::KVT_RX);
+                wrapper()->kvt_notify_write(kvt, KVT_SHUFFLE_INDICES, &kparam);
+            }
+            else
+                update_blind_grid();
         }
 
         void ab_tester_ui::update_blind_grid()
@@ -457,7 +516,7 @@ namespace lsp
                 if (c == NULL)
                     continue;
 
-//                c->wBlindLabel->text()->params()->set_int("id", i + 1);
+                c->wBlindLabel->text()->params()->set_int("id", i + 1);
                 wBlindGrid->add(c->wBlindLabel);
                 wBlindGrid->add(c->wBlindRating);
                 wBlindGrid->add(c->wBlindSelector);
@@ -490,6 +549,41 @@ namespace lsp
             reset_ratings();
             shuffle_data();
         }
+
+        status_t ab_tester_ui::slot_select_updated(tk::Widget *sender, void *ptr, void *data)
+        {
+            tk::Button *btn = tk::widget_cast<tk::Button>(sender);
+            if (btn == NULL)
+                return STATUS_OK;
+
+            ab_tester_ui *this_ = static_cast<ab_tester_ui *>(ptr);
+            if (ptr == NULL)
+                return STATUS_OK;
+
+            this_->select_updated(btn);
+
+            return STATUS_OK;
+        }
+
+        void ab_tester_ui::select_updated(tk::Button *btn)
+        {
+            // Handle only button down case
+            if (!btn->down()->get())
+                return;
+
+            float select = (btn == wSelectAll) ? 1.0f : 0.0f;
+
+            for (size_t i=0, n=vChannels.size(); i<n; ++i)
+            {
+                channel_t *c = vChannels.uget(i);
+                if (c->pEnable == NULL)
+                    continue;
+
+                c->pEnable->set_value(select);
+                c->pEnable->notify_all();
+            }
+        }
+
     } /* namespace plugui */
 } /* namespace lsp */
 

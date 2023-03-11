@@ -6,11 +6,15 @@
 	<vbox>
 		<!-- Heading buttons -->
 		<hbox>
+			<ui:if test=":channels igt 2">
+				<button ui:id="select_all" text="labels.chan.all" mode="trigger" />
+				<button ui:id="select_none" text="labels.chan.none" mode="trigger" />
+			</ui:if>
 			<button id="rst" text="actions.ab_tester.reset_rate" />
 			<button id="bte" text="actions.ab_tester.blind_test" />
 			<button id="shuf" text="actions.ab_tester.reshuffle" />
 			<ui:if test=":stereo">
-				<button id="mono" text="labels.chan.mono" />
+				<button id="mono" text="labels.signal.mono" />
 			</ui:if>
 		</hbox>
 		
@@ -77,7 +81,7 @@
 				</hbox>
 			</ui:for>
 		</grid>
-		<grid ui:id="bte_grid" rows="${:channels}" cols="3" visibility=":bte">
+		<grid ui:id="bte_grid" rows="${:channels + 1}" cols="3" visibility=":bte">
 			<cell cols="2">
 				<void ui:id="bte_void" />
 			</cell>

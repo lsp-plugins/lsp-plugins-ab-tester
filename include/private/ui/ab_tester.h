@@ -69,6 +69,8 @@ namespace lsp
                 tk::Grid                   *wBlindGrid;         // Grid with blind test widgets
                 tk::Widget                 *wBlindVoid;         // Blind void padding widget
                 tk::Widget                 *wBlindSelector;     // Blind selector widget
+                tk::Button                 *wSelectAll;         // Select all channels button
+                tk::Button                 *wSelectNone;        // Select none channels button
 
                 lltl::parray<channel_t>     vChannels;          // List of channels
                 lltl::parray<channel_t>     vShuffled;          // Shuffled channels
@@ -86,10 +88,12 @@ namespace lsp
                 void                blind_test_enable();
                 void                shuffle_data();
                 void                update_blind_grid();
+                void                select_updated(tk::Button *btn);
 
             protected:
                 static status_t     slot_rating_button_change(tk::Widget *sender, void *ptr, void *data);
                 static status_t     slot_channel_name_updated(tk::Widget *sender, void *ptr, void *data);
+                static status_t     slot_select_updated(tk::Widget *sender, void *ptr, void *data);
 
             public:
                 explicit ab_tester_ui(const meta::plugin_t *meta);
