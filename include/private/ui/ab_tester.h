@@ -67,8 +67,6 @@ namespace lsp
                 ui::IPort                  *pBlindTest;         // Blind test
 
                 tk::Grid                   *wBlindGrid;         // Grid with blind test widgets
-                tk::Widget                 *wBlindVoid;         // Blind void padding widget
-                tk::Widget                 *wBlindSelector;     // Blind selector widget
                 tk::Button                 *wSelectAll;         // Select all channels button
                 tk::Button                 *wSelectNone;        // Select none channels button
 

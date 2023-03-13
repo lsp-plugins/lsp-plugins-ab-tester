@@ -1,102 +1,90 @@
 <plugin resizable="true">
-	<ui:set id="channels"
-		value="${(ex :in_8l or ex :in_8) ? 8 : (ex :in_4l or ex :in_4) ? 4 : 2}"/>
+	<ui:set id="channels" value="${(ex :in_8l or ex :in_8) ? 8 : (ex :in_4l or ex :in_4) ? 4 : 2}"/>
 	<ui:set id="stereo" value="${ex :out_l or ex :out_r}"/>
+	<hbox>
 
-	<vbox>
-		<!-- Heading buttons -->
-		<hbox>
-			<ui:if test=":channels igt 2">
-				<button ui:id="select_all" text="labels.chan.all" mode="trigger" />
-				<button ui:id="select_none" text="labels.chan.none" mode="trigger" />
-			</ui:if>
-			<button id="rst" text="actions.ab_tester.reset_rate" />
-			<button id="bte" text="actions.ab_tester.blind_test" />
-			<button id="shuf" text="actions.ab_tester.reshuffle" />
-			<ui:if test=":stereo">
-				<button id="mono" text="labels.signal.mono" />
-			</ui:if>
-		</hbox>
-		
-		<!-- Channels -->
-		<grid rows="${:channels * 2 + 1}" cols="${(:channels igt 2) ? 5 : 4}" visibility="not :bte">
-			<cell cols="${(:channels igt 2) ? 4 : 3}">
-				<void />
-			</cell>
-			<button id="sel" text="actions.ab_tester.select" value="0" />
-		
-			<ui:for id="i" first="1" count=":channels">
-				<!-- row 1 -->
-				<ui:if test=":channels igt 2">
-					<cell rows="2">
-						<button id="bte_${i}" text="labels.chan.on" />
-					</cell>
-				</ui:if>
-				<cell cols="2">
-					<edit ui:id="channel_label_${i}" hfill="true" hexpand="true" />
-				</cell>
+		<!--new-->
+		<vbox>
+			<grid cols="2" rows="2">
 				<cell rows="2">
-					<vbox>
-						<label text="labels.gain" />
-						<knob id="g_${i}" />
-						<value id="g_${i}" same_line="true" />
-					</vbox>
+					<button id="bte" text="actions.ab_tester.blind_test" fill="true" pad.v="4" pad.h="6"/>
 				</cell>
-				<cell rows="2">
-					<button id="sel" text="actions.ab_tester.select" value="${i}" />
-				</cell>
-				
-				<!-- row 2 -->
-				<ledmeter height.min="16" vexpand="true" angle="0">
-					<ui:if test="!:stereo">
-						<ledchannel
-							id="ism_${i}"
-							min="-72 db"
-							max="12 db"
-							log="true"
-							type="rms_peak"
-							peak.visibility="true" />
-					</ui:if>
+				<hbox>
+					<button id="rst" text="actions.ab_tester.reset_rate" hfill="true" pad.v="4" pad.r="6"/>
+					<button id="shuf" text="actions.ab_tester.reshuffle" hfill="true" pad.v="4"/>
 					<ui:if test=":stereo">
-						<ledchannel
-							id="ism_${i}l"
-							min="-72 db"
-							max="12 db"
-							log="true"
-							type="rms_peak"
-							peak.visibility="true" />
-						<ledchannel
-							id="ism_${i}r"
-							min="-72 db"
-							max="12 db"
-							log="true"
-							type="rms_peak"
-							peak.visibility="true" />
+						<button id="mono" text="labels.signal.mono" hfill="true" pad.l="6" pad.v="4"/>
 					</ui:if>
-				</ledmeter>
-				<hbox hfill="false">
-					<ui:for id="j" first="1" count="10">
-						<button ui:id="rating_${i}_${j}" />
-					</ui:for>
 				</hbox>
-			</ui:for>
-		</grid>
-		<grid ui:id="bte_grid" rows="${:channels + 1}" cols="3" visibility=":bte">
-			<cell cols="2">
-				<void ui:id="bte_void" />
+				<hbox >
+					<ui:if test=":channels igt 2">
+						<ui:with visibility="not :bte">
+							<button ui:id="select_all" text="Select all" mode="trigger" hfill="true" pad.b="4" pad.r="6"/>
+							<button ui:id="select_none" text="Select none" mode="trigger" hfill="true" pad.b="4" pad.r="6"/>
+						</ui:with>
+					</ui:if>
+					<button id="sel" text="labels.chan.mute" value="0" pad.b="4" hfill="true" />
+				</hbox>				
+			</grid>
+			<grid rows="${:channels * 3}" cols="${(:channels igt 2) ? 3 : 2}" visibility="not :bte">
+				<ui:for id="i" first="1" count=":channels">
+					<!-- row 1 -->
+					<button id="bte_${i}" text="in test"/>
+					<edit ui:id="channel_label_${i}" hfill="true" hexpand="true"/>
+					<button id="sel" text="active" value="${i}"/>
+					<cell cols="${(:channels igt 2) ? 2 : 1}">
+					 <hbox>
+						<label text="In" />
+						<ledmeter height.min="16" hexpand="true" angle="0">
+							<ui:if test="!:stereo">
+								<ledchannel id="ism_${i}" min="-72 db" max="12 db" log="true" type="rms_peak" peak.visibility="true"/>
+							</ui:if>
+							<ui:if test=":stereo">
+								<ledchannel id="ism_${i}l" min="-72 db" max="12 db" log="true" type="rms_peak" peak.visibility="true"/>
+								<ledchannel id="ism_${i}r" min="-72 db" max="12 db" log="true" type="rms_peak" peak.visibility="true"/>
+							</ui:if>
+						</ledmeter>
+				   </hbox>
+					</cell>
+					<cell rows="2">
+					<vbox>
+						<label text="labels.gain"/>
+						<knob id="g_${i}"/>
+						<value id="g_${i}" same_line="true"/>
+					</vbox>
+					</cell>
+					<cell cols="${(:channels igt 2) ? 2 : 1}">
+					 <hbox>
+						<label text="Rating" />
+						<ui:for id="j" first="1" count="10">
+							<button ui:id="rating_${i}_${j}" hfill="true"/>
+						</ui:for>
+						<value id="rate_${i}"/>
+					 </hbox>
+					</cell>
+				</ui:for>
+			</grid>
+			<grid ui:id="bte_grid" rows="${:channels+2}" cols="3" visibility=":bte">
+			<cell cols="3">
+			<label text="bla bla bla" />
 			</cell>
-			<button ui:id="bte_selector_0" id="sel" text="actions.ab_tester.select" value="0" />
-			
-			<ui:for id="i" first="1" count=":channels">
-				<label ui:id="bte_label_${i}" text="labels.chan.num_id" text:id="${i}"/>
-				<hbox ui:id="bte_rating_${i}" hfill="false">
-					<ui:for id="j" first="1" count="10">
-						<button ui:id="bte_rating_${i}_${j}" />
-					</ui:for>
-				</hbox>
-				<button ui:id="bte_selector_${i}" id="sel" text="actions.ab_tester.select" value="${i}" />
-			</ui:for>
-		</grid>
-		<void expand="true" />
-	</vbox>
+
+
+				<ui:for id="i" first="1" count=":channels">
+					<label ui:id="bte_label_${i}" text="labels.chan.num_id" text:id="${i}"/>
+					<hbox ui:id="bte_rating_${i}">
+					<label text="Rating" />
+						<ui:for id="j" first="1" count="10">
+							<button ui:id="bte_rating_${i}_${j}" hfill="true"/>
+						</ui:for>
+						<value id="rate_${i}"/>
+					</hbox>
+					<button ui:id="bte_selector_${i}" id="sel" text="active" value="${i}"/>
+				</ui:for>
+			</grid>
+
+			<void expand="true"/>
+		</vbox>
+		<!-- ne end -->
+	</hbox>
 </plugin>

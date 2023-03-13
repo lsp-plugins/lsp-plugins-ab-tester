@@ -76,8 +76,6 @@ namespace lsp
             pBlindTest      = NULL;
 
             wBlindGrid      = NULL;
-            wBlindVoid      = NULL;
-            wBlindSelector  = NULL;
             wSelectAll      = NULL;
             wSelectNone     = NULL;
         }
@@ -195,8 +193,6 @@ namespace lsp
                 pBlindTest->bind(this);
 
             wBlindGrid              = reg->get<tk::Grid>("bte_grid");
-            wBlindVoid              = reg->find("bte_void");
-            wBlindSelector          = reg->find("bte_selector_0");
 
             wSelectAll              = reg->get<tk::Button>("select_all");
             if (wSelectAll != NULL)
@@ -506,17 +502,25 @@ namespace lsp
             if (wBlindGrid == NULL)
                 return;
 
-            wBlindGrid->remove_all();
-            wBlindGrid->add(wBlindVoid, 1, 2);
-            wBlindGrid->add(wBlindSelector);
+//            wBlindGrid->remove_all();
+            for (size_t i=0, n=vChannels.size(); i<n; ++i)
+            {
+                channel_t *c    = vChannels.uget(i);
+                if (c == NULL)
+                   continue;
+
+                wBlindGrid->remove(c->wBlindLabel);
+                wBlindGrid->remove(c->wBlindRating);
+                wBlindGrid->remove(c->wBlindSelector);
+            }
 
             for (size_t i=0, n=vShuffled.size(); i<n; ++i)
             {
                 channel_t *c    = vShuffled.uget(i);
                 if (c == NULL)
                     continue;
-
-                c->wBlindLabel->text()->params()->set_int("id", i + 1);
+                if (c->wBlindLabel != NULL)
+                    c->wBlindLabel->text()->params()->set_int("id", i + 1);
                 wBlindGrid->add(c->wBlindLabel);
                 wBlindGrid->add(c->wBlindRating);
                 wBlindGrid->add(c->wBlindSelector);
