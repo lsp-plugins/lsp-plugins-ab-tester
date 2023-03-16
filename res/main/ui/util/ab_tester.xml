@@ -5,59 +5,74 @@
 
 		<!--new -->
 		<vbox>
-			<grid cols="2" rows="2">
-				<cell rows="2">
-					<button id="bte" text="actions.ab_tester.blind_test" fill="true" pad.v="4" pad.h="6"/>
-				</cell>
-				<hbox>
-					<button id="rst" text="actions.ab_tester.reset_rate" hfill="true" pad.v="4" pad.r="6"/>
-					<button id="shuf" text="actions.ab_tester.reshuffle" hfill="true" pad.v="4"/>
-					<ui:if test=":stereo">
-						<button id="mono" text="labels.signal.mono" hfill="true" pad.l="6" pad.v="4"/>
-					</ui:if>
-				</hbox>
-				<hbox>
+			<grid cols="5" rows="2">
+				<vbox hfill="false" bg.color="bg_schema" pad.v="4">
 					<ui:if test=":channels igt 2">
-						<ui:with visibility="not :bte">
-							<button ui:id="select_all" text="Select all" mode="trigger" hfill="true" pad.b="4" pad.r="6"/>
-							<button ui:id="select_none" text="Select none" mode="trigger" hfill="true" pad.b="4" pad.r="6"/>
+						<ui:with visibility="not :bte" pad.l="6">
+							<button ui:id="select_all" text="actions.ab_tester.select_all" mode="trigger" hfill="true" pad.b="4"/>
+							<button ui:id="select_none" text="actions.ab_tester.select_none" mode="trigger" hfill="true"/>
 						</ui:with>
 					</ui:if>
-					<button id="sel" text="labels.chan.mute" value="0" pad.b="4" hfill="true"/>
-				</hbox>
+				</vbox>
+				<button id="bte" text="actions.ab_tester.blind_test" bg.color="bg_schema" fill="true" expand="true" pad.v="4" pad.l="6"/>
+				<vbox hfill="true" expand="true" bg.color="bg_schema" pad.v="4" pad.l="6" pad.r="4">
+					<button id="rst" text="actions.ab_tester.reset_rate" fill="true"/>
+					<button id="shuf" text="actions.ab_tester.reshuffle" fill="true" visibility=":bte" pad.t="4"/>
+				</vbox>
+				<cell rows="2">
+					<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+				</cell>
+				<vbox hfill="false" bg.color="bg_schema" pad.v="4" pad.h="4">
+					<ui:if test=":stereo">
+						<button id="mono" ui:inject="Button_mono" text="labels.signal.mono" hfill="true" pad.b="4"/>
+					</ui:if>
+					<button id="sel" text="labels.chan.mute" value="0" fill="true" width.min="50"/>
+				</vbox>
 			</grid>
 
+			<hsep bg.color="bg" vreduce="true" pad.v="2"/>
 
-			<grid rows="${:channels * 2}" cols="${(:channels igt 2) ? 5 : 4}" visibility="not :bte">
+			<!-- <grid rows="${:channels * 2 + 2}" cols="${(:channels igt 2) ? 8 : 7}" visibility="not :bte" bg.color="bg"> -->
+			<grid rows="${:channels * 3 + 1}" cols="8" visibility="not :bte" bg.color="bg">
 				<ui:for id="i" first="1" count=":channels">
 					<!-- row 1 -->
-					<cell rows="2">
-						<button id="bte_${i}" text="in test" fill="true"/>
-					</cell>
-					<edit ui:id="channel_label_${i}" hfill="true" hexpand="true"/>
+					<edit ui:id="channel_label_${i}" hfill="true" hexpand="true" bg.color="bg_schema" pad.h="6" width.min="130"/>
 					<!-- <cell cols="${(:channels igt 2) ? 2 : 1}"> -->
-					<cell >
-						<hbox>
-							<label text="Rating"/>
+					<cell bg.color="bg_schema">
+						<hbox pad.h="6">
+							<label text="labels.rating" pad.r="6"/>
 							<ui:for id="j" first="1" count="10">
 								<button ui:id="rating_${i}_${j}" hfill="true" mode="toggle"/>
 							</ui:for>
-							<value id="rate_${i}"/>
 						</hbox>
 					</cell>
 					<cell rows="2">
-						<vbox>
-							<label text="labels.gain"/>
-							<knob id="g_${i}"/>
-							<value id="g_${i}" same_line="true"/>
+						<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+					</cell>
+					<cell rows="2" bg.color="bg_schema" width.min="58">
+						<value id="rate_${i}" font.size="40"/>
+					</cell>
+					<cell rows="2">
+						<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+					</cell>
+					<cell rows="2" bg.color="bg_schema">
+						<vbox pad.h="6" pad.v="4">
+							<!-- <label text="labels.gain"/> -->
+							<knob id="g_${i}" size="16" pad.v="2"/>
+							<value id="g_${i}" same_line="true" width.min="48"/>
 						</vbox>
 					</cell>
 					<cell rows="2">
-<button id="sel" text="active" value="${i}" fill="true"/>
+						<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+					</cell>
+					<cell rows="2" bg.color="bg_schema">
+						<button id="sel" text="labels.active" value="${i}" fill="true" pad.v="4" pad.r="4" pad.l="4" width.min="50"/>
 					</cell>
 
-					<cell cols="${(:channels igt 2) ? 2 : 1}">
+					<cell cols="2" bg.color="bg_schema" pad.l="6" pad.r="2">
+						<!-- <cell cols="${(:channels igt 2) ? 2 : 1}" bg.color="bg_schema" pad.l="6" pad.r="2"> -->
 						<hbox>
+							<button id="bte_${i}" text="actions.ab_tester.in_test" pad.r="6" visibility="${:channels igt 2}"/>
 							<ledmeter height.min="16" hexpand="true" angle="0">
 								<ui:if test="!:stereo">
 									<ledchannel id="ism_${i}" min="-72 db" max="12 db" log="true" type="rms_peak" peak.visibility="true"/>
@@ -69,27 +84,44 @@
 							</ledmeter>
 						</hbox>
 					</cell>
-
+					<cell cols="8">
+						<!-- <cell cols="${(:channels igt 2) ? 8 : 7}"> -->
+						<hsep bg.color="bg" vreduce="true" pad.v="2"/>
+					</cell>
 				</ui:for>
 			</grid>
-			<grid ui:id="bte_grid" rows="${:channels+2}" cols="3" visibility=":bte">
-				<label text="labels.specials.num"/>
-				<label text="Rating"/>
-				<label/>
+
+			<grid ui:id="bte_grid" rows="${:channels * 3 + 2}" cols="3" visibility=":bte">
+				<!-- row 1 -->
+				<ui:with bg.color="bg_schema">
+					<label text="labels.specials.num" pad.v="4" pad.h="6"/>
+					<label text="labels.rating"/>
+					<label/>
+				</ui:with>
+				<!-- row 2 -->
+				<cell cols="3">
+					<hsep bg.color="bg" vreduce="true" pad.v="2"/>
+				</cell>
 
 				<ui:for id="i" first="1" count=":channels">
-					<label ui:id="bte_label_${i}" text="labels.chan.num_id" text:id="${i}"/>
-					<hbox ui:id="bte_rating_${i}">
+					<label ui:id="bte_label_${i}" text="labels.chan.rand_id" text:id="${i}" bg.color="bg_schema" pad.v="4" pad.h="6"/>
+					<hbox ui:id="bte_rating_${i}" hexpand="true">
+						<void ui:id="bte_void" expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
 						<ui:for id="j" first="1" count="10">
-							<button ui:id="bte_rating_${i}_${j}" hfill="true" mode="toggle"/>
+							<button ui:id="bte_rating_${i}_${j}" hfill="true" mode="toggle" bg.color="bg_schema"/>
 						</ui:for>
-						<value id="rate_${i}"/>
+						<value id="rate_${i}" pad.h="6" bg.color="bg_schema" width.min="16"/>
+						<void ui:id="bte_void" expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
+						<vsep ui:id="bte_void" bg.color="bg" hreduce="true" pad.h="2"/>
 					</hbox>
-					<button ui:id="bte_selector_${i}" id="sel" text="active" value="${i}"/>
+					<button ui:id="bte_selector_${i}" id="sel" text="labels.active" value="${i}" fill="false" bg.color="bg_schema" pad.v="4" pad.r="4" pad.l="4" width="50"/>
+					<cell cols="4">
+						<hsep bg.color="bg" vreduce="true" pad.v="2"/>
+					</cell>
 				</ui:for>
 			</grid>
 
-			<void expand="true"/>
+			<void expand="true" bg.color="bg_schema" height.min="20"/>
 		</vbox>
 		<!-- ne end -->
 	</hbox>
