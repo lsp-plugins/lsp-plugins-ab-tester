@@ -151,6 +151,8 @@ namespace lsp
             c->wBlindRating     = reg->find(&id);
             id.fmt_ascii("bte_selector_%d", int(c->nIndex));
             c->wBlindSelector   = reg->find(&id);
+            id.fmt_ascii("bte_separator_%d", int(c->nIndex));
+            c->wBlindSeparator  = reg->find(&id);
 
             return c;
         }
@@ -450,6 +452,8 @@ namespace lsp
 
         void ab_tester_ui::shuffle_data()
         {
+            reset_ratings();
+
             // Re-shuffle channels
             for (size_t i=0, n=vShuffled.size(); i<n; ++i)
             {
@@ -512,6 +516,7 @@ namespace lsp
                 wBlindGrid->remove(c->wBlindLabel);
                 wBlindGrid->remove(c->wBlindRating);
                 wBlindGrid->remove(c->wBlindSelector);
+                wBlindGrid->remove(c->wBlindSeparator);
             }
 
             for (size_t i=0, n=vShuffled.size(); i<n; ++i)
@@ -524,6 +529,7 @@ namespace lsp
                 wBlindGrid->add(c->wBlindLabel);
                 wBlindGrid->add(c->wBlindRating);
                 wBlindGrid->add(c->wBlindSelector);
+                wBlindGrid->add(c->wBlindSeparator, 1, 4);
             }
         }
 
@@ -550,7 +556,6 @@ namespace lsp
                 return;
             }
 
-            reset_ratings();
             shuffle_data();
         }
 

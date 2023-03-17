@@ -50,6 +50,7 @@ namespace lsp
                     tk::Label                  *wBlindLabel;    // Blind label marker
                     tk::Widget                 *wBlindRating;   // Blind rating container
                     tk::Widget                 *wBlindSelector; // Blind selector
+                    tk::Widget                 *wBlindSeparator;// Blind separator
 
                     bool                        bNameChanged;   // Indicator that channel name has changed
 

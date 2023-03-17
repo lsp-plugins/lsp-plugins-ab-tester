@@ -106,17 +106,17 @@
 				<ui:for id="i" first="1" count=":channels">
 					<label ui:id="bte_label_${i}" text="labels.chan.rand_id" text:id="${i}" bg.color="bg_schema" pad.v="4" pad.h="6"/>
 					<hbox ui:id="bte_rating_${i}" hexpand="true">
-						<void ui:id="bte_void" expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
+						<void  expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
 						<ui:for id="j" first="1" count="10">
 							<button ui:id="bte_rating_${i}_${j}" hfill="true" mode="toggle" bg.color="bg_schema"/>
 						</ui:for>
 						<value id="rate_${i}" pad.h="6" bg.color="bg_schema" width.min="16"/>
-						<void ui:id="bte_void" expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
-						<vsep ui:id="bte_void" bg.color="bg" hreduce="true" pad.h="2"/>
+						<void expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
+						<vsep bg.color="bg" hreduce="true" pad.h="2"/>
 					</hbox>
 					<button ui:id="bte_selector_${i}" id="sel" text="labels.active" value="${i}" fill="false" bg.color="bg_schema" pad.v="4" pad.r="4" pad.l="4" width="50"/>
 					<cell cols="4">
-						<hsep bg.color="bg" vreduce="true" pad.v="2"/>
+						<hsep ui:id="bte_separator_${i}" bg.color="bg" vreduce="true" pad.v="2"/>
 					</cell>
 				</ui:for>
 			</grid>
