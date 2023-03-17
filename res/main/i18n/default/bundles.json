@@ -1,7 +1,7 @@
 {
 	"ab_tester": {
-		"name": "Plugin Template",
-		"description": "TODO: write description"
+		"name": "A/B Test Plugin",
+		"description": "Plugin that allows to perform quick A/B test with blind option"
 	}
 }
 

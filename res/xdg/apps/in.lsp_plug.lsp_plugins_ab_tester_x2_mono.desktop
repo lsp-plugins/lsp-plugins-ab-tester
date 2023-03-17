@@ -1,10 +1,10 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=TODO: Template Plugin
-GenericName=TODO: Template Plugin
-Comment=TODO: add description what plugin does
-Exec=lsp-plugins-ab-tester-mono
+Name=A/B Tester x2 Mono
+GenericName=A/B Tester
+Comment=Mono plugin that allows to perform quick A/B test of two channels with blind option
+Exec=lsp-plugins-ab-tester-x2-mono
 Icon=lsp-plugins
 Terminal=false
 StartupNotify=false

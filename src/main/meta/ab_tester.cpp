@@ -237,7 +237,7 @@ namespace lsp
             "A/B Test Plugin",
             B_UTILITIES,
             "", // TODO: provide ID of the video on YouTube
-            "" // TODO: write plugin description, should be the same to the english version in 'bundles.json'
+            "Plugin that allows to perform quick A/B test with blind option"
         };
 
         const plugin_t ab_tester_x2_mono =
