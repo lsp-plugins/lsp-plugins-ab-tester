@@ -42,10 +42,10 @@
 							<label text="labels.rating" pad.r="6"/>
 							<ui:for id="j" first="1" count="10">
 								<button ui:id="rating_${i}_${j}" ui:inject="Button_cyan" hfill="true" mode="toggle"
-									down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'dark_cyan' : 'bg_light'"
-									down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'dark_cyan' : 'bg_light'"
-									border.down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'bright_cyan' : 'bg_name'"
-									border.down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'cyan' : 'bg_name'"
+									down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'dark_cyan' : 'button_inactive'"
+									down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'dark_cyan' : 'button_inactive'"
+									border.down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'bright_cyan' : 'button_inactive_border'"
+									border.down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'cyan' : 'button_inactive_border'"
 									/>
 							</ui:for>
 						</hbox>
