@@ -342,6 +342,7 @@ $(LSP_PLUGINS_AB_TESTER_BIN)/main/ui/ab_tester.o: main/ui/ab_tester.cpp \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ui/IPlayListener.h \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ui/ControlPort.h \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ui/PathPort.h \
+ $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ui/ProxyPort.h \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ui/Factory.h \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ui/UIOverrides.h \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ui/UIContext.h \
@@ -471,6 +472,7 @@ $(LSP_PLUGINS_AB_TESTER_BIN)/main/ui/ab_tester.o: main/ui/ab_tester.cpp \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ctl/specific/Rack.h \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/ctl/specific/ThreadComboBox.h \
  $(LSP_PLUGIN_FW_INC)/lsp-plug.in/plug-fw/meta/func.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdio.h \
  $(LSP_PLUGINS_AB_TESTER_INC)/private/plugins/ab_tester.h \
  $(LSP_DSP_UNITS_INC)/lsp-plug.in/dsp-units/ctl/Bypass.h \
  $(LSP_PLUGINS_AB_TESTER_INC)/private/meta/ab_tester.h \
