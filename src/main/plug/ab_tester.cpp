@@ -186,11 +186,11 @@ namespace lsp
                     r->pInMeter         = TRACE_PORT(ports[port_id++]);
                 }
 
-                // Skip rate value
-                TRACE_PORT(ports[port_id++]);
                 // Skip blind test input switch
                 if (num_inputs > 2)
                     TRACE_PORT(ports[port_id++]);
+                // Skip rate value
+                TRACE_PORT(ports[port_id++]);
             }
         }
 

@@ -48,10 +48,10 @@ namespace lsp
 
         #define ABTEST_MONO_CHANNEL(id, label, blind_switch, bte) \
             AUDIO_INPUT("in" id, "Audio input " label), \
-            blind_switch(id, label, bte) \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
-            INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE), \
-            METER_GAIN("ism" id, "Input signal meter " label, GAIN_AMP_P_48_DB)
+            METER_GAIN("ism" id, "Input signal meter " label, GAIN_AMP_P_48_DB), \
+            blind_switch(id, label, bte) \
+            INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE)
 
         #define ABTEST_STEREO_CHANNEL(id, label, blind_switch, bte) \
             AUDIO_INPUT("in" id "l", "Audio input " label " Left"), \
