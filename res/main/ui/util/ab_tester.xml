@@ -50,7 +50,7 @@
 									down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_color' : 'button_inactive'"
 									down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_hover_color' : 'button_inactive'"
 									border.down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_border_color' : 'button_inactive_border'"
-									border.down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_border_hover_color' : 'button_inactive_border'"
+									border.down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_border_hover_color' : 'button_inactive_border'"
 									gradient="false"
 									/>
 							</ui:for>
