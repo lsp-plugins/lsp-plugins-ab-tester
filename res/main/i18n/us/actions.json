@@ -1,0 +1,11 @@
+{
+	"ab_tester": {
+		"blind_test": "Blind test",
+		"in_test": "In Test",
+		"reset_rate": "Reset rate",
+		"reshuffle": "Reshuffle",
+		"select": "Select",
+		"select_all": "Select All",
+		"select_none": "Select None"
+	}
+}

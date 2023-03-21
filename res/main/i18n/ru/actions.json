@@ -1,0 +1,11 @@
+{
+	"ab_tester": {
+		"blind_test": "Слепой тест",
+		"in_test": "В тест",
+		"reset_rate": "Сбросить рейтинг",
+		"reshuffle": "Перемешать",
+		"select": "Выбрать",
+		"select_all": "Выбрать все",
+		"select_none": "Ничего"
+	}
+}

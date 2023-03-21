@@ -1,0 +1,171 @@
+<plugin resizable="true">
+	<ui:set id="channels" value="${(ex :in_8l or ex :in_8) ? 8 : (ex :in_4l or ex :in_4) ? 4 : 2}"/>
+	<ui:set id="stereo" value="${ex :out_l or ex :out_r}"/>
+	<!-- header -->
+	<vbox>
+		<grid cols="5" rows="2">
+			<vbox hfill="false" bg.color="bg_schema" pad.v="4">
+				<ui:if test=":channels igt 2">
+					<ui:with visibility="not :bte" pad.l="6">
+						<button ui:id="select_all" text="actions.ab_tester.select_all" ui:inject="Button_cyan" mode="trigger" hfill="true" pad.b="4"/>
+						<button ui:id="select_none" text="actions.ab_tester.select_none" ui:inject="Button_cyan" mode="trigger" hfill="true"/>
+					</ui:with>
+				</ui:if>
+			</vbox>
+			<button id="bte" text="actions.ab_tester.blind_test" ui:inject="Button_cyan" bg.color="bg_schema" fill="true" expand="true" pad.v="4" pad.l="6"/>
+			<vbox hfill="true" expand="true" bg.color="bg_schema" pad.v="4" pad.l="6" pad.r="4">
+				<button id="rst" text="actions.ab_tester.reset_rate" ui:inject="Button_cyan" fill="true"/>
+				<button id="shuf" text="actions.ab_tester.reshuffle" ui:inject="Button_cyan" fill="true" visibility=":bte" pad.t="4"/>
+			</vbox>
+			<cell rows="2">
+				<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+			</cell>
+			<vbox hfill="false" bg.color="bg_schema" pad.v="4" pad.h="4">
+				<ui:if test=":stereo">
+					<button id="mono" ui:inject="Button_mono" text="labels.signal.mono" hfill="true" pad.b="4"/>
+				</ui:if>
+				<button id="sel" text="labels.chan.mute" ui:inject="Button_cyan" value="0" fill="true" width.min="50"/>
+			</vbox>
+		</grid>
+
+		<hsep bg.color="bg" vreduce="true" pad.v="2"/>
+		<!-- header end-->
+
+		<!-- channels -->
+		<grid rows="${:channels * 3 + 1}" cols="8" visibility="not :bte" bg.color="bg">
+			<ui:for id="i" first="1" count=":channels">
+				<!-- row 1 -->
+				<ui:with bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : 0.75" bg.bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_bg_darken">
+					<edit ui:id="channel_label_${i}" hfill="true" hexpand="true" bg.color="bg_schema" pad.h="6" width.min="130"/>
+					<cell bg.color="bg_schema">
+						<hbox pad.h="6">
+							<label text="labels.rating" pad.r="6"/>
+							<ui:for id="j" first="1" count="10">
+								<button ui:id="rating_${i}_${j}" ui:inject="Button_cyan" hfill="true" mode="toggle"
+                  color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_color' : 'button_inactive'"
+									border.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_border_color' : 'button_inactive_border'"
+									hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_hover_color' : 'button_inactive'"
+									border.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_border_hover_color' : 'button_inactive_border'"
+
+									down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_color' : 'button_inactive'"
+									down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_hover_color' : 'button_inactive'"
+									border.down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_border_color' : 'button_inactive_border'"
+									border.down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_border_hover_color' : 'button_inactive_border'"
+									gradient="false"
+									/>
+							</ui:for>
+						</hbox>
+					</cell>
+				</ui:with>
+				<cell rows="2">
+					<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+				</cell>
+				<ui:with bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : 0.75" bg.bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_bg_darken">
+					<cell rows="2" bg.color="bg_schema" width.min="58">
+						<value id="rate_${i}" font.size="40"/>
+					</cell>
+				</ui:with>
+				<cell rows="2">
+					<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+				</cell>
+				<ui:with bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : 0.75" bg.bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_bg_darken">
+					<cell rows="2" bg.color="bg_schema">
+						<vbox pad.h="6" pad.v="4">
+							<knob id="g_${i}" size="16" pad.v="2" scolor="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'kscale' : 'cycle_inactive'"/>
+							<value id="g_${i}" same_line="true" width.min="48"/>
+						</vbox>
+					</cell>
+				</ui:with>
+				<cell rows="2">
+					<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+				</cell>
+				<ui:with bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : 0.75" bg.bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_bg_darken">
+					<cell rows="2" bg.color="bg_schema">
+						<button id="sel" text="labels.active" ui:inject="Button_cyan" value="${i}" fill="true" pad.v="4" pad.r="4" pad.l="4" width.min="50"/>
+					</cell>
+
+					<cell cols="2" bg.color="bg_schema" pad.l="6" pad.r="2">
+						<hbox>
+							<button id="bte_${i}" text="actions.ab_tester.in_test" ui:inject="Button_cyan" pad.r="6" visibility="${:channels igt 2}"/>
+							<ledmeter height.min="16" hexpand="true" angle="0" bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_led_darken">
+								<ui:if test="!:stereo">
+									<ledchannel
+										id="ism_${i}"
+										min="-72 db"
+										max="12 db"
+										log="true"
+										type="rms_peak"
+										peak.visibility="true"
+										value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'mono' : 'cycle_inactive'"
+										yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
+										red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
+								</ui:if>
+								<ui:if test=":stereo">
+									<ledchannel
+										id="ism_${i}l"
+										min="-72 db"
+										max="12 db"
+										log="true"
+										type="rms_peak"
+										peak.visibility="true"
+										value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'left' : 'cycle_inactive'"
+										yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
+										red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
+									<ledchannel
+										id="ism_${i}r"
+										min="-72 db"
+										max="12 db"
+										log="true"
+										type="rms_peak"
+										peak.visibility="true"
+										value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'right' : 'cycle_inactive'"
+										yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
+										red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
+								</ui:if>
+							</ledmeter>
+						</hbox>
+					</cell>
+				</ui:with>
+				<cell cols="8">
+					<hsep bg.color="bg" vreduce="true" pad.v="2"/>
+				</cell>
+
+			</ui:for>
+		</grid>
+		<!-- channels end-->
+
+		<!-- blind test -->
+		<grid ui:id="bte_grid" rows="${:channels * 3 + 2}" cols="3" visibility=":bte">
+			<!-- row 1 -->
+			<ui:with bg.color="bg_schema">
+				<label text="labels.specials.num" pad.v="4" pad.h="6"/>
+				<label text="labels.rating"/>
+				<label/>
+			</ui:with>
+			<!-- row 2 -->
+			<cell cols="3">
+				<hsep bg.color="bg" vreduce="true" pad.v="2"/>
+			</cell>
+
+			<ui:for id="i" first="1" count=":channels">
+				<label ui:id="bte_label_${i}" text="labels.chan.rand_id" text:id="${i}" bg.color="bg_schema" pad.v="4" pad.h="6"/>
+				<hbox ui:id="bte_rating_${i}" hexpand="true">
+					<void expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
+					<ui:for id="j" first="1" count="10">
+						<button ui:id="bte_rating_${i}_${j}" ui:inject="Button_cyan" hfill="true" mode="toggle" bg.color="bg_schema"/>
+					</ui:for>
+					<value id="rate_${i}" pad.h="6" bg.color="bg_schema" width.min="16"/>
+					<void expand="true" bg.color="bg_schema" pad.v="4" pad.h="6"/>
+					<vsep bg.color="bg" hreduce="true" pad.h="2"/>
+				</hbox>
+				<button ui:id="bte_selector_${i}" id="sel" ui:inject="Button_cyan" text="labels.active" value="${i}" fill="false" bg.color="bg_schema" pad.v="4" pad.r="4" pad.l="4" width="50"/>
+				<cell cols="4">
+					<hsep ui:id="bte_separator_${i}" bg.color="bg" vreduce="true" pad.v="2"/>
+				</cell>
+			</ui:for>
+		</grid>
+		<!-- blind test end-->
+		<void expand="true" bg.color="bg_schema" height.min="20"/>
+	</vbox>
+
+</plugin>
