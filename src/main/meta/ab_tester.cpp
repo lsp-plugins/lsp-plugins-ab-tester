@@ -236,7 +236,7 @@ namespace lsp
             "ab_tester",
             "A/B Test Plugin",
             B_UTILITIES,
-            "", // TODO: provide ID of the video on YouTube
+            "EFf4VqvMUXM",
             "Plugin that allows to perform quick A/B test with blind option"
         };
 
