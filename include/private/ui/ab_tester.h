@@ -103,7 +103,7 @@ namespace lsp
             public:
                 virtual status_t    post_init() override;
 
-                virtual void        notify(ui::IPort *port) override;
+                virtual void        notify(ui::IPort *port, size_t flags) override;
 
                 virtual void        idle() override;
 

@@ -206,7 +206,7 @@ namespace lsp
             return STATUS_OK;
         }
 
-        void ab_tester_ui::notify(ui::IPort *port)
+        void ab_tester_ui::notify(ui::IPort *port, size_t flags)
         {
             if (port == pBlindTest)
             {
@@ -282,7 +282,7 @@ namespace lsp
                     if (btn == rate_btn)
                     {
                         c->pRating->set_value(max);
-                        c->pRating->notify_all();
+                        c->pRating->notify_all(ui::PORT_USER_EDIT);
                         break;
                     }
                 }
@@ -438,7 +438,7 @@ namespace lsp
                     continue;
 
                 c->pRating->set_default();
-                c->pRating->notify_all();
+                c->pRating->notify_all(ui::PORT_USER_EDIT);
             }
         }
 
@@ -469,7 +469,7 @@ namespace lsp
             if (pSelector != NULL)
             {
                 pSelector->set_value(0);
-                pSelector->notify_all();
+                pSelector->notify_all(ui::PORT_USER_EDIT);
             }
 
             // Store shuffle state
@@ -552,7 +552,7 @@ namespace lsp
             if (vShuffled.size() < 2)
             {
                 pBlindTest->set_value(0.0f);
-                pBlindTest->notify_all();
+                pBlindTest->notify_all(ui::PORT_USER_EDIT);
                 return;
             }
 
@@ -589,7 +589,7 @@ namespace lsp
                     continue;
 
                 c->pEnable->set_value(select);
-                c->pEnable->notify_all();
+                c->pEnable->notify_all(ui::PORT_USER_EDIT);
             }
         }
 
