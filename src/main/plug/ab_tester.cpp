@@ -260,6 +260,7 @@ namespace lsp
                     out_channel_t *out   = &vOutChannels[i % nOutChannels];
 
                     dsp::lramp2(vTmp, in->vIn, in->fOldGain, in->fGain, block);
+                    in->fOldGain        = in->fGain;
                     float level         = (bBlindTest) ? 0.0f : dsp::abs_max(vTmp, block);
                     in->sBypass.process(vTmp, NULL, vTmp, block);
                     in->pInMeter->set_value(level);
