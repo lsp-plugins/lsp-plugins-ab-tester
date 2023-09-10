@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-ab-tester
  * Created on: 25 нояб. 2020 г.
@@ -91,7 +91,7 @@ namespace lsp
 
         ab_tester::~ab_tester()
         {
-            destroy();
+            do_destroy();
         }
 
         void ab_tester::init(plug::IWrapper *wrapper, plug::IPort **ports)
@@ -197,7 +197,11 @@ namespace lsp
         void ab_tester::destroy()
         {
             Module::destroy();
+            do_destroy();
+        }
 
+        void ab_tester::do_destroy()
+        {
             if (pData != NULL)
             {
                 free_aligned(pData);
