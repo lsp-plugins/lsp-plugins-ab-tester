@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-ab-tester
  * Created on: 25 нояб. 2020 г.
@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_AB_TESTER_VERSION_MAJOR       1
 #define LSP_PLUGINS_AB_TESTER_VERSION_MINOR       0
-#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       7
+#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       8
 
 #define LSP_PLUGINS_AB_TESTER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -244,6 +244,7 @@ namespace lsp
         {
             "A/B Prüfer x2 Mono",
             "A/B Tester x2 Mono",
+            "A/B Tester x2 Mono",
             "ABP2M",
             &developers::v_sadovnikov,
             "ab_tester_x2_mono",
@@ -267,6 +268,7 @@ namespace lsp
         const plugin_t ab_tester_x4_mono =
         {
             "A/B Prüfer x4 Mono",
+            "A/B Tester x4 Mono",
             "A/B Tester x4 Mono",
             "ABP4M",
             &developers::v_sadovnikov,
@@ -292,6 +294,7 @@ namespace lsp
         {
             "A/B Prüfer x8 Mono",
             "A/B Tester x8 Mono",
+            "A/B Tester x8 Mono",
             "ABP8M",
             &developers::v_sadovnikov,
             "ab_tester_x8_mono",
@@ -315,6 +318,7 @@ namespace lsp
         const plugin_t ab_tester_x2_stereo =
         {
             "A/B Prüfer x2 Stereo",
+            "A/B Tester x2 Stereo",
             "A/B Tester x2 Stereo",
             "ABP2S",
             &developers::v_sadovnikov,
@@ -340,6 +344,7 @@ namespace lsp
         {
             "A/B Prüfer x4 Stereo",
             "A/B Tester x4 Stereo",
+            "A/B Tester x4 Stereo",
             "ABP4S",
             &developers::v_sadovnikov,
             "ab_tester_x4_stereo",
@@ -363,6 +368,7 @@ namespace lsp
         const plugin_t ab_tester_x8_stereo =
         {
             "A/B Prüfer x8 Stereo",
+            "A/B Tester x8 Stereo",
             "A/B Tester x8 Stereo",
             "ABP8S",
             &developers::v_sadovnikov,
