@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-ab-tester
  * Created on: 25 нояб. 2020 г.
@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_AB_TESTER_VERSION_MAJOR       1
 #define LSP_PLUGINS_AB_TESTER_VERSION_MINOR       0
-#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       8
+#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       9
 
 #define LSP_PLUGINS_AB_TESTER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -251,6 +251,8 @@ namespace lsp
             LSP_LV2_URI("ab_tester_x2_mono"),
             LSP_LV2UI_URI("ab_tester_x2_mono"),
             "ab2m",
+            LSP_VST3_UID("abp2m   ab2m"),
+            LSP_VST3UI_UID("abp2m   ab2m"),
             LSP_LADSPA_AB_TESTER_BASE + 0,
             LSP_LADSPA_URI("ab_tester_x2_mono"),
             LSP_CLAP_URI("ab_tester_x2_mono"),
@@ -276,6 +278,8 @@ namespace lsp
             LSP_LV2_URI("ab_tester_x4_mono"),
             LSP_LV2UI_URI("ab_tester_x4_mono"),
             "ab4m",
+            LSP_VST3_UID("abp4m   ab4m"),
+            LSP_VST3UI_UID("abp4m   ab4m"),
             LSP_LADSPA_AB_TESTER_BASE + 1,
             LSP_LADSPA_URI("ab_tester_x4_mono"),
             LSP_CLAP_URI("ab_tester_x4_mono"),
@@ -301,6 +305,8 @@ namespace lsp
             LSP_LV2_URI("ab_tester_x8_mono"),
             LSP_LV2UI_URI("ab_tester_x8_mono"),
             "ab8m",
+            LSP_VST3_UID("abp8m   ab8m"),
+            LSP_VST3UI_UID("abp8m   ab8m"),
             LSP_LADSPA_AB_TESTER_BASE + 2,
             LSP_LADSPA_URI("ab_tester_x8_mono"),
             LSP_CLAP_URI("ab_tester_x8_mono"),
@@ -326,6 +332,8 @@ namespace lsp
             LSP_LV2_URI("ab_tester_x2_stereo"),
             LSP_LV2UI_URI("ab_tester_x2_stereo"),
             "ab2s",
+            LSP_VST3_UID("abp2s   ab2s"),
+            LSP_VST3UI_UID("abp2s   ab2s"),
             LSP_LADSPA_AB_TESTER_BASE + 3,
             LSP_LADSPA_URI("ab_tester_x2_stereo"),
             LSP_CLAP_URI("ab_tester_x2_stereo"),
@@ -351,6 +359,8 @@ namespace lsp
             LSP_LV2_URI("ab_tester_x4_stereo"),
             LSP_LV2UI_URI("ab_tester_x4_stereo"),
             "ab4s",
+            LSP_VST3_UID("abp4s   ab4s"),
+            LSP_VST3UI_UID("abp4s   ab4s"),
             LSP_LADSPA_AB_TESTER_BASE + 4,
             LSP_LADSPA_URI("ab_tester_x4_stereo"),
             LSP_CLAP_URI("ab_tester_x4_stereo"),
@@ -376,6 +386,8 @@ namespace lsp
             LSP_LV2_URI("ab_tester_x8_stereo"),
             LSP_LV2UI_URI("ab_tester_x8_stereo"),
             "ab8s",
+            LSP_VST3_UID("abp8s   ab8s"),
+            LSP_VST3UI_UID("abp8s   ab8s"),
             LSP_LADSPA_AB_TESTER_BASE + 5,
             LSP_LADSPA_URI("ab_tester_x8_stereo"),
             LSP_CLAP_URI("ab_tester_x8_stereo"),
