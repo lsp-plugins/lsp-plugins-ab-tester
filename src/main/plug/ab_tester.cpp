@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-ab-tester
  * Created on: 25 нояб. 2020 г.
@@ -23,20 +23,16 @@
 #include <lsp-plug.in/common/debug.h>
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/dsp-units/units.h>
+#include <lsp-plug.in/plug-fw/core/AudioBuffer.h>
 #include <lsp-plug.in/plug-fw/meta/func.h>
+#include <lsp-plug.in/shared/debug.h>
 
 #include <private/plugins/ab_tester.h>
 
-/* The size of temporary buffer for audio processing */
-#define BUFFER_SIZE         0x400U
-
 namespace lsp
 {
-    static plug::IPort *TRACE_PORT(plug::IPort *p)
-    {
-        lsp_trace("  port id=%s", (p)->metadata()->id);
-        return p;
-    }
+    /* The size of temporary buffer for audio processing */
+    static constexpr size_t BUFFER_SIZE         = 0x400U;
 
     namespace plugins
     {
@@ -111,16 +107,9 @@ namespace lsp
                 return;
 
             // Input channels
-            vInChannels                 = reinterpret_cast<in_channel_t *>(ptr);
-            ptr                        += szof_in_channel;
-
-            // Output channels
-            vOutChannels                = reinterpret_cast<out_channel_t *>(ptr);
-            ptr                        += szof_out_channel;
-
-            // Temporary buffer
-            vTmp                        = reinterpret_cast<float *>(ptr);
-            ptr                        += szof_buffers;
+            vInChannels                 = advance_ptr_bytes<in_channel_t>(ptr, szof_in_channel);
+            vOutChannels                = advance_ptr_bytes<out_channel_t>(ptr, szof_out_channel);
+            vTmp                        = advance_ptr_bytes<float>(ptr, szof_buffers);
 
             // Initialize input channels
             for (size_t i=0; i<nInChannels; ++i)
@@ -153,15 +142,15 @@ namespace lsp
 
             // Output ports
             for (size_t i=0; i<nOutChannels; ++i)
-                vOutChannels[i].pOut        = TRACE_PORT(ports[port_id++]);
+                BIND_PORT(vOutChannels[i].pOut);
 
             // Bind global ports
-            TRACE_PORT(ports[port_id++]); // Reset rating
-            pBlindTest          = TRACE_PORT(ports[port_id++]); // Blind test enable
-            TRACE_PORT(ports[port_id++]); // Re-shuffle
-            pChannelSel         = TRACE_PORT(ports[port_id++]); // Channel selector
+            SKIP_PORT("Reset rating");
+            BIND_PORT(pBlindTest); // Blind test enable
+            SKIP_PORT("Re-shuffle");
+            BIND_PORT(pChannelSel); // Channel selector
             if (nOutChannels > 1)
-                pMono               = TRACE_PORT(ports[port_id++]);
+                BIND_PORT(pMono);
 
             // Input ports
             size_t num_inputs   = nInChannels / nOutChannels;
@@ -170,27 +159,33 @@ namespace lsp
                 if (nOutChannels == 1)
                 {
                     in_channel_t *c     = &vInChannels[i];
-                    c->pIn              = TRACE_PORT(ports[port_id++]);
-                    c->pGain            = TRACE_PORT(ports[port_id++]);
-                    c->pInMeter         = TRACE_PORT(ports[port_id++]);
+                    BIND_PORT(c->pIn);
+                    SKIP_PORT("Return name");
+                    BIND_PORT(c->pRet);
+                    BIND_PORT(c->pGain);
+                    BIND_PORT(c->pInMeter);
                 }
                 else
                 {
                     in_channel_t *l     = &vInChannels[i];
                     in_channel_t *r     = &vInChannels[i+1];
-                    l->pIn              = TRACE_PORT(ports[port_id++]);
-                    r->pIn              = TRACE_PORT(ports[port_id++]);
-                    l->pGain            = TRACE_PORT(ports[port_id++]);
+                    BIND_PORT(l->pIn);
+                    BIND_PORT(r->pIn);
+                    SKIP_PORT("Return name");
+                    BIND_PORT(l->pRet);
+                    BIND_PORT(r->pRet);
+                    BIND_PORT(l->pGain);
+                    BIND_PORT(l->pInMeter);
+                    BIND_PORT(r->pInMeter);
+                    
                     r->pGain            = l->pGain;
-                    l->pInMeter         = TRACE_PORT(ports[port_id++]);
-                    r->pInMeter         = TRACE_PORT(ports[port_id++]);
                 }
 
                 // Skip blind test input switch
                 if (num_inputs > 2)
-                    TRACE_PORT(ports[port_id++]);
-                // Skip rate value
-                TRACE_PORT(ports[port_id++]);
+                    SKIP_PORT("Blind test input switch");
+                // Skip rating value
+                SKIP_PORT("Input rating");
             }
         }
 
@@ -244,6 +239,9 @@ namespace lsp
             {
                 in_channel_t *c     = &vInChannels[i];
                 c->vIn              = c->pIn->buffer<float>();
+
+                core::AudioBuffer *ret  = c->pRet->buffer<core::AudioBuffer>();
+                c->vRet                 = ((ret!= NULL) && (ret->active())) ? ret->buffer() : NULL;
             }
             for (size_t i=0; i<nOutChannels; ++i)
             {
@@ -264,6 +262,9 @@ namespace lsp
                     out_channel_t *out   = &vOutChannels[i % nOutChannels];
 
                     dsp::lramp2(vTmp, in->vIn, in->fOldGain, in->fGain, block);
+                    if (in->vRet != NULL)
+                        dsp::lramp_add2(vTmp, in->vRet, in->fOldGain, in->fGain, block);
+
                     in->fOldGain        = in->fGain;
                     float level         = (bBlindTest) ? 0.0f : dsp::abs_max(vTmp, block);
                     in->sBypass.process(vTmp, NULL, vTmp, block);
@@ -285,7 +286,12 @@ namespace lsp
                 // Update pointers
                 offset             += block;
                 for (size_t i=0; i<nInChannels; ++i)
-                    vInChannels[i].vIn     += block;
+                {
+                    in_channel_t *c         = &vInChannels[i];
+                    c->vIn                 += block;
+                    if (c->vRet != NULL)
+                        c->vRet                += block;
+                }
                 for (size_t i=0; i<nOutChannels; ++i)
                     vOutChannels[i].vOut   += block;
             }
@@ -302,9 +308,11 @@ namespace lsp
                 {
                     v->write_object(&in->sBypass);
                     v->write("vIn", in->vIn);
+                    v->write("vRet", in->vRet);
                     v->write("fOldGain", in->fOldGain);
                     v->write("fGain", in->fGain);
                     v->write("pIn", in->pIn);
+                    v->write("pRet", in->pRet);
                     v->write("pGain", in->pGain);
                     v->write("pInMeter", in->pInMeter);
                 }

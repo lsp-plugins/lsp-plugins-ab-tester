@@ -36,13 +36,14 @@
 			<ui:for id="i" first="1" count=":channels">
 				<!-- row 1 -->
 				<ui:with bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : 0.75" bg.bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_bg_darken">
-					<edit ui:id="channel_label_${i}" hfill="true" hexpand="true" bg.color="bg_schema" pad.h="6" width.min="130"/>
+					<edit ui:id="channel_label_${i}" hfill="true" hexpand="false" bg.color="bg_schema" pad.l="6" width.min="192"/>
 					<cell bg.color="bg_schema">
-						<hbox pad.h="6">
+						<hbox pad.h="6" hexpand="false">
+							<void hexpand="true" />
 							<label text="labels.rating" pad.r="6"/>
 							<ui:for id="j" first="1" count="10">
 								<button ui:id="rating_${i}_${j}" ui:inject="Button_cyan" hfill="true" mode="toggle"
-                  color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_color' : 'button_inactive'"
+									color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_color' : 'button_inactive'"
 									border.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_border_color' : 'button_inactive_border'"
 									hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_hover_color' : 'button_inactive'"
 									border.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_border_hover_color' : 'button_inactive_border'"
@@ -51,8 +52,7 @@
 									down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_hover_color' : 'button_inactive'"
 									border.down.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_border_color' : 'button_inactive_border'"
 									border.down.hover.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'button_cyan_rating_down_border_hover_color' : 'button_inactive_border'"
-									gradient="false"
-									/>
+									gradient="false" />
 							</ui:for>
 						</hbox>
 					</cell>
@@ -84,47 +84,48 @@
 						<button id="sel" text="labels.active" ui:inject="Button_cyan" value="${i}" fill="true" pad.v="4" pad.r="4" pad.l="4" width.min="50"/>
 					</cell>
 
-					<cell cols="2" bg.color="bg_schema" pad.l="6" pad.r="2">
-						<hbox>
-							<button id="bte_${i}" text="actions.ab_tester.in_test" ui:inject="Button_cyan" pad.r="6" visibility="${:channels igt 2}"/>
-							<ledmeter height.min="16" hexpand="true" angle="0" bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_led_darken">
-								<ui:if test="!:stereo">
-									<ledchannel
-										id="ism_${i}"
-										min="-72 db"
-										max="12 db"
-										log="true"
-										type="rms_peak"
-										peak.visibility="true"
-										value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'mono' : 'cycle_inactive'"
-										yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
-										red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
-								</ui:if>
-								<ui:if test=":stereo">
-									<ledchannel
-										id="ism_${i}l"
-										min="-72 db"
-										max="12 db"
-										log="true"
-										type="rms_peak"
-										peak.visibility="true"
-										value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'left' : 'cycle_inactive'"
-										yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
-										red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
-									<ledchannel
-										id="ism_${i}r"
-										min="-72 db"
-										max="12 db"
-										log="true"
-										type="rms_peak"
-										peak.visibility="true"
-										value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'right' : 'cycle_inactive'"
-										yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
-										red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
-								</ui:if>
-							</ledmeter>
-						</hbox>
-					</cell>
+					<hbox bg.color="bg_schema" pad.l="6" pad.r="2">
+						<button id="bte_${i}" text="actions.ab_tester.in_test" ui:inject="Button_cyan" pad.r="6" visibility="${:channels igt 2}"/>
+						<shmlink id="retn_${i}" />
+						<void hexpand="true" />
+					</hbox>
+					
+					<ledmeter height.min="16" hexpand="true" angle="0" bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_led_darken">
+						<ui:if test="!:stereo">
+							<ledchannel
+								id="ism_${i}"
+								min="-72 db"
+								max="12 db"
+								log="true"
+								type="rms_peak"
+								peak.visibility="true"
+								value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'mono' : 'cycle_inactive'"
+								yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
+								red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
+						</ui:if>
+						<ui:if test=":stereo">
+							<ledchannel
+								id="ism_${i}l"
+								min="-72 db"
+								max="12 db"
+								log="true"
+								type="rms_peak"
+								peak.visibility="true"
+								value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'left' : 'cycle_inactive'"
+								yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
+								red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
+							<ledchannel
+								id="ism_${i}r"
+								min="-72 db"
+								max="12 db"
+								log="true"
+								type="rms_peak"
+								peak.visibility="true"
+								value.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'right' : 'cycle_inactive'"
+								yellow.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_yellow' : 'cycle_inactive'"
+								red.color="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 'meter_red' : 'cycle_inactive'"/>
+						</ui:if>
+					</ledmeter>
 				</ui:with>
 				<cell cols="8">
 					<hsep bg.color="bg" vreduce="true" pad.v="2"/>

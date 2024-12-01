@@ -44,10 +44,12 @@ namespace lsp
                 {
                     dspu::Bypass        sBypass;    // Bypass
                     float              *vIn;        // Input data
+                    float              *vRet;       // Return data
                     float               fOldGain;   // Old gain value
                     float               fGain;      // Input gain
 
                     plug::IPort        *pIn;        // Input data
+                    plug::IPort        *pRet;       // Return data
                     plug::IPort        *pGain;      // Input gain
                     plug::IPort        *pInMeter;   // Input level meter
                 } in_channel_t;
