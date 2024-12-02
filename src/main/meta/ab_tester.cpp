@@ -48,7 +48,7 @@ namespace lsp
 
         #define ABTEST_MONO_CHANNEL(id, label, blind_switch, bte) \
             AUDIO_INPUT("in" id, "Audio input " label), \
-            OPT_RETURN_MONO("retn" id, "ret" id, "Audio return " label), \
+            OPT_RETURN_MONO("ret" id, "rin" id, "Audio return " label), \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
             METER_GAIN("ism" id, "Input signal meter " label, GAIN_AMP_P_48_DB), \
             blind_switch(id, label, bte) \

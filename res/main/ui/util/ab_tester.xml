@@ -86,7 +86,7 @@
 
 					<hbox bg.color="bg_schema" pad.l="6" pad.r="2">
 						<button id="bte_${i}" text="actions.ab_tester.in_test" ui:inject="Button_cyan" pad.r="6" visibility="${:channels igt 2}"/>
-						<shmlink id="retn_${i}" />
+						<shmlink id="ret_${i}" />
 						<void hexpand="true" />
 					</hbox>
 					
