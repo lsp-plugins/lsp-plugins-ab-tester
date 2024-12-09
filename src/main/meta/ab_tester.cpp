@@ -57,7 +57,7 @@ namespace lsp
         #define ABTEST_STEREO_CHANNEL(id, label, blind_switch, bte) \
             AUDIO_INPUT("in" id "l", "Audio input " label " Left"), \
             AUDIO_INPUT("in" id "r", "Audio input " label " Right"), \
-            OPT_RETURN_STEREO("retn" id, "ret" id, "Audio return " label), \
+            OPT_RETURN_STEREO("ret" id, "rin" id, "Audio return " label), \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
             METER_GAIN("ism" id "l", "Input signal meter " label " Left", GAIN_AMP_P_48_DB), \
             METER_GAIN("ism" id "r", "Input signal meter " label " Right", GAIN_AMP_P_48_DB), \
