@@ -86,10 +86,9 @@
 
 					<hbox bg.color="bg_schema" pad.l="6" pad.r="2">
 						<button id="bte_${i}" text="actions.ab_tester.in_test" ui:inject="Button_cyan" pad.r="6" visibility="${:channels igt 2}"/>
-						<shmlink id="ret_${i}" />
-						<void hexpand="true" />
+						<shmlink id="ret_${i}" hfill="true"/>
 					</hbox>
-					
+
 					<ledmeter height.min="16" hexpand="true" angle="0" bright="(:bte_${i} or :sel ieq ${i}) or !(${:channels igt 2}) ? 1.0 : :const_led_darken">
 						<ui:if test="!:stereo">
 							<ledchannel
