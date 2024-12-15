@@ -4,6 +4,7 @@
 
 === 1.0.15 ===
 * Added returns that allow to use shared memory to connect inputs.
+* Updated build scripts and dependencies.
 
 === 1.0.14 ===
 * Updated build scripts and dependencies.
