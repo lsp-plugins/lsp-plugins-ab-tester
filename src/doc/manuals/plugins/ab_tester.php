@@ -38,6 +38,7 @@
 <p><b>Individual input controls:</b></p>
 <ul>
 	<li><b>User label</b> - custom user text to identify the input.</li>
+	<li><b>Link</b> - allows to add additional signal from shared memory link to the input channel's signal.</li>
 	<li><b>In test</b> - allows to mark the input as selected for blind test.</li>
 	<li><b>Rating</b> - the user rating that can be assigned to the corresponding input.</li>
 	<li><b>Gain</b> - the makeup gain for the corresponding input.</li>

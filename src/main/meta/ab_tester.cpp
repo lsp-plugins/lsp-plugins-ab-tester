@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_AB_TESTER_VERSION_MAJOR       1
 #define LSP_PLUGINS_AB_TESTER_VERSION_MINOR       0
-#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       14
+#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       15
 
 #define LSP_PLUGINS_AB_TESTER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -48,6 +48,7 @@ namespace lsp
 
         #define ABTEST_MONO_CHANNEL(id, label, blind_switch, bte) \
             AUDIO_INPUT("in" id, "Audio input " label), \
+            OPT_RETURN_MONO("ret" id, "rin" id, "Audio return " label), \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
             METER_GAIN("ism" id, "Input signal meter " label, GAIN_AMP_P_48_DB), \
             blind_switch(id, label, bte) \
@@ -56,6 +57,7 @@ namespace lsp
         #define ABTEST_STEREO_CHANNEL(id, label, blind_switch, bte) \
             AUDIO_INPUT("in" id "l", "Audio input " label " Left"), \
             AUDIO_INPUT("in" id "r", "Audio input " label " Right"), \
+            OPT_RETURN_STEREO("ret" id, "rin" id, "Audio return " label), \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
             METER_GAIN("ism" id "l", "Input signal meter " label " Left", GAIN_AMP_P_48_DB), \
             METER_GAIN("ism" id "r", "Input signal meter " label " Right", GAIN_AMP_P_48_DB), \
