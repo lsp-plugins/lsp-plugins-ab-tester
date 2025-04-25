@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-ab-tester
  * Created on: 25 нояб. 2020 г.
@@ -68,7 +68,7 @@ namespace lsp
             TRIGGER("rst", "Reset channel rating"), \
             SWITCH("bte", "Blind test enable", 0.0), \
             TRIGGER("shuf", "Re-shuffle channels"), \
-            INT_CONTROL_RANGE("sel", "Channel selector", U_NONE, 0, max_sel, 0, 1)
+            INT_CONTROL_ALL("sel", "Channel selector", U_NONE, 0, max_sel, 0, 1)
 
         #define ABTEST_MONO_SWITCH \
             SWITCH("mono", "Mono switch", 0.0f)
