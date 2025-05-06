@@ -41,44 +41,44 @@ namespace lsp
         //-------------------------------------------------------------------------
         // Plugin metadata
 
-        #define BLIND_SWITCH(id, label, enable) \
-            SWITCH("bte" id, "Blind test enable " label, enable), \
+        #define BLIND_SWITCH(id, label, alias, enable) \
+            SWITCH("bte" id, "Blind test enable " label, "Test on" alias, enable), \
 
-        #define NO_BLIND_SWITCH(id, label, enable)
+        #define NO_BLIND_SWITCH(id, label, alias, enable)
 
-        #define ABTEST_MONO_CHANNEL(id, label, blind_switch, bte) \
+        #define ABTEST_MONO_CHANNEL(id, label, alias, blind_switch, bte) \
             AUDIO_INPUT("in" id, "Audio input " label), \
             OPT_RETURN_MONO("ret" id, "rin" id, "Audio return " label), \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
             METER_GAIN("ism" id, "Input signal meter " label, GAIN_AMP_P_48_DB), \
-            blind_switch(id, label, bte) \
+            blind_switch(id, label, alias, bte) \
             INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE)
 
-        #define ABTEST_STEREO_CHANNEL(id, label, blind_switch, bte) \
+        #define ABTEST_STEREO_CHANNEL(id, label, alias, blind_switch, bte) \
             AUDIO_INPUT("in" id "l", "Audio input " label " Left"), \
             AUDIO_INPUT("in" id "r", "Audio input " label " Right"), \
             OPT_RETURN_STEREO("ret" id, "rin" id, "Audio return " label), \
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
             METER_GAIN("ism" id "l", "Input signal meter " label " Left", GAIN_AMP_P_48_DB), \
             METER_GAIN("ism" id "r", "Input signal meter " label " Right", GAIN_AMP_P_48_DB), \
-            blind_switch(id, label, bte) \
+            blind_switch(id, label, alias, bte) \
             INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE) \
 
         #define ABTEST_GLOBAL(max_sel) \
-            TRIGGER("rst", "Reset channel rating"), \
-            SWITCH("bte", "Blind test enable", 0.0), \
-            TRIGGER("shuf", "Re-shuffle channels"), \
+            TRIGGER("rst", "Reset channel rating", "Reset"), \
+            SWITCH("bte", "Blind test enable", "Blind test", 0.0), \
+            TRIGGER("shuf", "Re-shuffle channels", "Shuffle"), \
             INT_CONTROL_ALL("sel", "Channel selector", U_NONE, 0, max_sel, 0, 1)
 
         #define ABTEST_MONO_SWITCH \
-            SWITCH("mono", "Mono switch", 0.0f)
+            SWITCH("mono", "Mono switch", "Mono", 0.0f)
 
         static const port_t ab_tester_x2_mono_ports[] =
         {
             AUDIO_OUTPUT_MONO,
             ABTEST_GLOBAL(3),
-            ABTEST_MONO_CHANNEL("_1", "1", NO_BLIND_SWITCH, 1.0),
-            ABTEST_MONO_CHANNEL("_2", "2", NO_BLIND_SWITCH, 1.0),
+            ABTEST_MONO_CHANNEL("_1", "1", " 1", NO_BLIND_SWITCH, 1.0),
+            ABTEST_MONO_CHANNEL("_2", "2", " 2", NO_BLIND_SWITCH, 1.0),
             PORTS_END
         };
 
@@ -86,10 +86,10 @@ namespace lsp
         {
             AUDIO_OUTPUT_MONO,
             ABTEST_GLOBAL(5),
-            ABTEST_MONO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
-            ABTEST_MONO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
-            ABTEST_MONO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),
-            ABTEST_MONO_CHANNEL("_4", "4", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_1", "1", " 1", BLIND_SWITCH, 1.0),
+            ABTEST_MONO_CHANNEL("_2", "2", " 2", BLIND_SWITCH, 1.0),
+            ABTEST_MONO_CHANNEL("_3", "3", " 3", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_4", "4", " 4", BLIND_SWITCH, 0.0),
             PORTS_END
         };
 
@@ -97,14 +97,14 @@ namespace lsp
         {
             AUDIO_OUTPUT_MONO,
             ABTEST_GLOBAL(9),
-            ABTEST_MONO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
-            ABTEST_MONO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
-            ABTEST_MONO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),
-            ABTEST_MONO_CHANNEL("_4", "4", BLIND_SWITCH, 0.0),
-            ABTEST_MONO_CHANNEL("_5", "5", BLIND_SWITCH, 0.0),
-            ABTEST_MONO_CHANNEL("_6", "6", BLIND_SWITCH, 0.0),
-            ABTEST_MONO_CHANNEL("_7", "7", BLIND_SWITCH, 0.0),
-            ABTEST_MONO_CHANNEL("_8", "8", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_1", "1", " 1", BLIND_SWITCH, 1.0),
+            ABTEST_MONO_CHANNEL("_2", "2", " 2", BLIND_SWITCH, 1.0),
+            ABTEST_MONO_CHANNEL("_3", "3", " 3", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_4", "4", " 4", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_5", "5", " 5", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_6", "6", " 6", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_7", "7", " 7", BLIND_SWITCH, 0.0),
+            ABTEST_MONO_CHANNEL("_8", "8", " 8", BLIND_SWITCH, 0.0),
             PORTS_END
         };
 
@@ -113,8 +113,8 @@ namespace lsp
             AUDIO_OUTPUT_STEREO,
             ABTEST_GLOBAL(3),
             ABTEST_MONO_SWITCH,
-            ABTEST_STEREO_CHANNEL("_1", "1", NO_BLIND_SWITCH, 1.0),
-            ABTEST_STEREO_CHANNEL("_2", "2", NO_BLIND_SWITCH, 1.0),
+            ABTEST_STEREO_CHANNEL("_1", "1", " 1", NO_BLIND_SWITCH, 1.0),
+            ABTEST_STEREO_CHANNEL("_2", "2", " 2", NO_BLIND_SWITCH, 1.0),
             PORTS_END
         };
 
@@ -123,10 +123,10 @@ namespace lsp
             AUDIO_OUTPUT_STEREO,
             ABTEST_GLOBAL(5),
             ABTEST_MONO_SWITCH,
-            ABTEST_STEREO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
-            ABTEST_STEREO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
-            ABTEST_STEREO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),
-            ABTEST_STEREO_CHANNEL("_4", "4", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_1", "1", " 1", BLIND_SWITCH, 1.0),
+            ABTEST_STEREO_CHANNEL("_2", "2", " 2", BLIND_SWITCH, 1.0),
+            ABTEST_STEREO_CHANNEL("_3", "3", " 3", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_4", "4", " 4", BLIND_SWITCH, 0.0),
             PORTS_END
         };
 
@@ -135,14 +135,14 @@ namespace lsp
             AUDIO_OUTPUT_STEREO,
             ABTEST_GLOBAL(9),
             ABTEST_MONO_SWITCH,
-            ABTEST_STEREO_CHANNEL("_1", "1", BLIND_SWITCH, 1.0),
-            ABTEST_STEREO_CHANNEL("_2", "2", BLIND_SWITCH, 1.0),
-            ABTEST_STEREO_CHANNEL("_3", "3", BLIND_SWITCH, 0.0),
-            ABTEST_STEREO_CHANNEL("_4", "4", BLIND_SWITCH, 0.0),
-            ABTEST_STEREO_CHANNEL("_5", "5", BLIND_SWITCH, 0.0),
-            ABTEST_STEREO_CHANNEL("_6", "6", BLIND_SWITCH, 0.0),
-            ABTEST_STEREO_CHANNEL("_7", "7", BLIND_SWITCH, 0.0),
-            ABTEST_STEREO_CHANNEL("_8", "8", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_1", "1", " 1", BLIND_SWITCH, 1.0),
+            ABTEST_STEREO_CHANNEL("_2", "2", " 2", BLIND_SWITCH, 1.0),
+            ABTEST_STEREO_CHANNEL("_3", "3", " 3", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_4", "4", " 4", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_5", "5", " 5", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_6", "6", " 6", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_7", "7", " 7", BLIND_SWITCH, 0.0),
+            ABTEST_STEREO_CHANNEL("_8", "8", " 8", BLIND_SWITCH, 0.0),
             PORTS_END
         };
 
