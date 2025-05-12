@@ -52,7 +52,7 @@ namespace lsp
             AMP_GAIN100("g" id, "Input gain " label, 1.0), \
             METER_GAIN("ism" id, "Input signal meter " label, GAIN_AMP_P_48_DB), \
             blind_switch(id, label, alias, bte) \
-            INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE)
+            INT_CONTROL("rate" id, "Channel blind test rate " label, "Rate " label, U_NONE, meta::ab_tester::RATE)
 
         #define ABTEST_STEREO_CHANNEL(id, label, alias, blind_switch, bte) \
             AUDIO_INPUT("in" id "l", "Audio input " label " Left"), \
@@ -62,13 +62,13 @@ namespace lsp
             METER_GAIN("ism" id "l", "Input signal meter " label " Left", GAIN_AMP_P_48_DB), \
             METER_GAIN("ism" id "r", "Input signal meter " label " Right", GAIN_AMP_P_48_DB), \
             blind_switch(id, label, alias, bte) \
-            INT_CONTROL("rate" id, "Channel blind test rate " label, U_NONE, meta::ab_tester::RATE) \
+            INT_CONTROL("rate" id, "Channel blind test rate " label, "Rate " label, U_NONE, meta::ab_tester::RATE) \
 
         #define ABTEST_GLOBAL(max_sel) \
             TRIGGER("rst", "Reset channel rating", "Reset"), \
             SWITCH("bte", "Blind test enable", "Blind test", 0.0), \
             TRIGGER("shuf", "Re-shuffle channels", "Shuffle"), \
-            INT_CONTROL_ALL("sel", "Channel selector", U_NONE, 0, max_sel, 0, 1)
+            INT_CONTROL_ALL("sel", "Channel selector", "Channel selector", U_NONE, 0, max_sel, 0, 1)
 
         #define ABTEST_MONO_SWITCH \
             SWITCH("mono", "Mono switch", "Mono", 0.0f)
