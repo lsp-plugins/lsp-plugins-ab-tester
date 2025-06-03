@@ -30,7 +30,7 @@
 	<li><b>Blind test</b> - toggles the blind test mode.</li>
 	<li><b>Reset rate</b> - allows to simply reset all ratings values to default values.</li>
 	<? if ($m == 'm') {?>
-	<li><b>Mono</b> - converts stereo output to mono output for testing mono compatiblity.</li>
+	<li><b>Mono</b> - converts stereo output to mono output for testing mono compatibility.</li>
 	<? } ?>
 	<li><b>Mute</b> - mutes the output and deselects any channel as being A/B tested.</li>
 </ul>
