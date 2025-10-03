@@ -309,7 +309,7 @@ namespace lsp
             kparam.type     = core::KVT_STRING;
             kparam.str      = name;
             lsp_trace("%s = %s", kvt_name, kparam.str);
-            kvt->put(kvt_name, &kparam, core::KVT_RX);
+            kvt->put(kvt_name, &kparam, core::KVT_TO_DSP);
             wrapper()->kvt_notify_write(kvt, kvt_name, &kparam);
         }
 
@@ -493,7 +493,7 @@ namespace lsp
                 kparam.u32      = shuffle_data;
 
                 lsp_trace("%s = 0x%x", KVT_SHUFFLE_INDICES, int(kparam.u32));
-                kvt->put(KVT_SHUFFLE_INDICES, &kparam, core::KVT_RX);
+                kvt->put(KVT_SHUFFLE_INDICES, &kparam, core::KVT_TO_DSP);
                 wrapper()->kvt_notify_write(kvt, KVT_SHUFFLE_INDICES, &kparam);
             }
             else
