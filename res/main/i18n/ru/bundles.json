@@ -1,0 +1,15 @@
+{
+	"ab_tester": {
+		"description": "Плагин, позволяющий выполнить быстрый A/B-тест вслепую",
+		"name": "A/B тестировщик"
+	},
+	"launcher": {
+		"ab_tester_x2_mono": "Моно X2",
+		"ab_tester_x4_mono": "Моно X4",
+		"ab_tester_x8_mono": "Моно X8",
+		"ab_tester_x2_stereo": "Стерео X2",
+		"ab_tester_x4_stereo": "Стерео X4",
+		"ab_tester_x8_stereo": "Стерео X8"
+	}
+}
+
