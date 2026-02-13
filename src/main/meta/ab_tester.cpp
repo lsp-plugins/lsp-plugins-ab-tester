@@ -268,7 +268,7 @@ namespace lsp
             clap_features_mono,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x2_mono_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x2_mono_port_groups,
             &ab_tester_bundle
@@ -299,7 +299,7 @@ namespace lsp
             clap_features_mono,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x4_mono_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x4_mono_port_groups,
             &ab_tester_bundle
@@ -330,7 +330,7 @@ namespace lsp
             clap_features_mono,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x8_mono_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x8_mono_port_groups,
             &ab_tester_bundle
@@ -361,7 +361,7 @@ namespace lsp
             clap_features_stereo,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x2_stereo_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x2_stereo_port_groups,
             &ab_tester_bundle
@@ -392,7 +392,7 @@ namespace lsp
             clap_features_stereo,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x4_stereo_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x4_stereo_port_groups,
             &ab_tester_bundle
@@ -423,7 +423,7 @@ namespace lsp
             clap_features_stereo,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x8_stereo_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x8_stereo_port_groups,
             &ab_tester_bundle
