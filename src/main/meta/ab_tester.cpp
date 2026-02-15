@@ -271,7 +271,8 @@ namespace lsp
             "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x2_mono_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            4
         };
         LSP_REGISTER_METADATA(ab_tester_x2_mono);
 
@@ -302,7 +303,8 @@ namespace lsp
             "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x4_mono_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            5
         };
         LSP_REGISTER_METADATA(ab_tester_x4_mono);
 
@@ -333,7 +335,8 @@ namespace lsp
             "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x8_mono_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            6
         };
         LSP_REGISTER_METADATA(ab_tester_x8_mono);
 
@@ -364,7 +367,8 @@ namespace lsp
             "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x2_stereo_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            1
         };
         LSP_REGISTER_METADATA(ab_tester_x2_stereo);
 
@@ -395,7 +399,8 @@ namespace lsp
             "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x4_stereo_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            2
         };
         LSP_REGISTER_METADATA(ab_tester_x4_stereo);
 
@@ -426,7 +431,8 @@ namespace lsp
             "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x8_stereo_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            3
         };
         LSP_REGISTER_METADATA(ab_tester_x8_stereo);
 
