@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-ab-tester
  * Created on: 25 нояб. 2020 г.
@@ -20,12 +20,14 @@
  */
 
 #include <lsp-plug.in/plug-fw/meta/ports.h>
+#include <lsp-plug.in/plug-fw/meta/registry.h>
 #include <lsp-plug.in/shared/meta/developers.h>
+
 #include <private/meta/ab_tester.h>
 
 #define LSP_PLUGINS_AB_TESTER_VERSION_MAJOR       1
 #define LSP_PLUGINS_AB_TESTER_VERSION_MINOR       0
-#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       21
+#define LSP_PLUGINS_AB_TESTER_VERSION_MICRO       22
 
 #define LSP_PLUGINS_AB_TESTER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -266,11 +268,13 @@ namespace lsp
             clap_features_mono,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x2_mono_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x2_mono_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            4
         };
+        LSP_REGISTER_METADATA(ab_tester_x2_mono);
 
         const plugin_t ab_tester_x4_mono =
         {
@@ -296,11 +300,13 @@ namespace lsp
             clap_features_mono,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x4_mono_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x4_mono_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            5
         };
+        LSP_REGISTER_METADATA(ab_tester_x4_mono);
 
         const plugin_t ab_tester_x8_mono =
         {
@@ -326,11 +332,13 @@ namespace lsp
             clap_features_mono,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x8_mono_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x8_mono_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            6
         };
+        LSP_REGISTER_METADATA(ab_tester_x8_mono);
 
         const plugin_t ab_tester_x2_stereo =
         {
@@ -356,11 +364,13 @@ namespace lsp
             clap_features_stereo,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x2_stereo_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x2_stereo_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            1
         };
+        LSP_REGISTER_METADATA(ab_tester_x2_stereo);
 
         const plugin_t ab_tester_x4_stereo =
         {
@@ -386,11 +396,13 @@ namespace lsp
             clap_features_stereo,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x4_stereo_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x4_stereo_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            2
         };
+        LSP_REGISTER_METADATA(ab_tester_x4_stereo);
 
         const plugin_t ab_tester_x8_stereo =
         {
@@ -416,11 +428,13 @@ namespace lsp
             clap_features_stereo,
             E_DUMP_STATE | E_KVT_SYNC,
             ab_tester_x8_stereo_ports,
-            "util/ab_tester.xml",
+            "plugins/util/ab_tester.xml",
             NULL,
             ab_tester_x8_stereo_port_groups,
-            &ab_tester_bundle
+            &ab_tester_bundle,
+            3
         };
+        LSP_REGISTER_METADATA(ab_tester_x8_stereo);
 
     } /* namespace meta */
 } /* namespace lsp */
